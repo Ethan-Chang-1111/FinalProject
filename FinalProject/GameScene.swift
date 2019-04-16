@@ -15,10 +15,6 @@ class GameScene: SKScene {
     private var spinnyNode : SKShapeNode?
     
     override func didMove(to view: SKView) {
-        //testing
-        //big daddy
-        //arnav is frikin lesbian
-        //rereerrre
         
         
         // Get label node from scene and store it for use later
