@@ -11,6 +11,7 @@ import GameplayKit
 
 class GameScene: SKScene {
     //help meeeeeee
+    //wtf have you done
     private var label : SKLabelNode?
     private var spinnyNode : SKShapeNode?
     
