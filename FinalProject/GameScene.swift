@@ -10,7 +10,8 @@ import SpriteKit
 import GameplayKit
 
 class GameScene: SKScene {
-    //helpmeeeeeee
+    //help meeeeeee
+    //wtf have you done
     private var label : SKLabelNode?
     private var spinnyNode: SKShapeNode?
     
