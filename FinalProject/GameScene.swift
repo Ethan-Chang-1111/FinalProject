@@ -44,5 +44,3 @@ class GameScene: SKScene, SKPhysicsContactDelegate {
     }
     
 }
-
-//DID NOT COMMIT
