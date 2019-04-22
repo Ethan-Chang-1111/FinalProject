@@ -12,7 +12,7 @@ import GameplayKit
 class GameScene: SKScene, SKPhysicsContactDelegate {
     var umbrella = SKSpriteNode()
     var runner = SKShapeNode()
-    var rainDrop = SKSpriteNode()
+    var rainDrop = SKShapeNode()
     var ground = SKSpriteNode()
     var playingGame = true
     var score = 0
@@ -27,6 +27,7 @@ class GameScene: SKScene, SKPhysicsContactDelegate {
     func createStoryboardObjects() {
         createBackground()
         createGround()
+        createDrop()
     }
     
     func createBackground() {
@@ -41,6 +42,20 @@ class GameScene: SKScene, SKPhysicsContactDelegate {
         ground.physicsBody = SKPhysicsBody(rectangleOf: ground.size)
         ground.physicsBody?.isDynamic = false
         addChild(ground)
+    }
+    
+    func createDrop(){
+        rainDrop = SKShapeNode(circleOfRadius: 10)
+        rainDrop.position = CGPoint(x: frame.midX, y: frame.midY)
+        rainDrop.strokeColor = UIColor.black
+        rainDrop.fillColor = UIColor.yellow
+        
+        rainDrop.physicsBody?.affectedByGravity = true
+        rainDrop.physicsBody?.isDynamic = true
+        rainDrop.physicsBody?.usesPreciseCollisionDetection = true
+        
+        addChild(rainDrop)
+        
     }
     
 }
