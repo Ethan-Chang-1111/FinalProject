@@ -21,7 +21,12 @@ class GameScene: SKScene, SKPhysicsContactDelegate {
     var rainDrops = [SKSpriteNode()]
     
     override func didMove(to view: SKView) {
+        self.physicsBody = SKPhysicsBody(edgeLoopFrom: self.frame)
+        physicsWorld.contactDelegate = self
+        
+        
         createStoryboardObjects()
+        rainDrop.physicsBody?.applyImpulse(CGVector(dx: 5, dy: 0))
     }
     
     func createStoryboardObjects() {
@@ -31,17 +36,21 @@ class GameScene: SKScene, SKPhysicsContactDelegate {
     }
     
     func createBackground() {
+        
+        
         background.position = CGPoint(x: 0, y: 0)
+        background.zPosition = -1
         addChild(background)
     }
     
     func createGround() {
-        ground = SKSpriteNode(color: UIColor.green, size: CGSize(width: 50, height: frame.height))
-        ground.position = CGPoint(x: frame.maxX, y: frame.midY)
+        ground = SKSpriteNode(color: UIColor.green, size: CGSize(width: frame.height, height: 50))
+        ground.position = CGPoint(x: frame.midX, y: -150)
         ground.name = "ground"
+        
         ground.physicsBody = SKPhysicsBody(rectangleOf: ground.size)
         ground.physicsBody?.isDynamic = false
-        addChild(ground)
+        //addChild(ground)
     }
     
     func createDrop(){
@@ -49,11 +58,14 @@ class GameScene: SKScene, SKPhysicsContactDelegate {
         rainDrop.position = CGPoint(x: frame.midX, y: frame.midY)
         rainDrop.strokeColor = UIColor.black
         rainDrop.fillColor = UIColor.yellow
-        
-        rainDrop.physicsBody?.affectedByGravity = true
+        rainDrop.name = "rainDrop"
+        rainDrop.physicsBody = SKPhysicsBody(circleOfRadius: 10)
         rainDrop.physicsBody?.isDynamic = true
         rainDrop.physicsBody?.usesPreciseCollisionDetection = true
-        
+        rainDrop.physicsBody?.friction = 0
+        rainDrop.physicsBody?.affectedByGravity = false
+        rainDrop.physicsBody?.restitution = 1
+        rainDrop.physicsBody?.linearDamping = 0
         addChild(rainDrop)
         
     }
