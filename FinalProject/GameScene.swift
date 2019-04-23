@@ -26,7 +26,7 @@ class GameScene: SKScene, SKPhysicsContactDelegate {
         
         
         createStoryboardObjects()
-        rainDrop.physicsBody?.applyImpulse(CGVector(dx: 5, dy: 0))
+        rainDrop.physicsBody?.applyImpulse(CGVector(dx: 0, dy: 5))
     }
     
     func createStoryboardObjects() {
@@ -45,12 +45,13 @@ class GameScene: SKScene, SKPhysicsContactDelegate {
     
     func createGround() {
         ground = SKSpriteNode(color: UIColor.green, size: CGSize(width: frame.height, height: 50))
-        ground.position = CGPoint(x: frame.midX, y: -150)
+        ground.position = CGPoint(x: frame.midX, y: frame.midY-175)
         ground.name = "ground"
+
         
         ground.physicsBody = SKPhysicsBody(rectangleOf: ground.size)
         ground.physicsBody?.isDynamic = false
-        //addChild(ground)
+        addChild(ground)
     }
     
     func createDrop(){
@@ -68,6 +69,13 @@ class GameScene: SKScene, SKPhysicsContactDelegate {
         rainDrop.physicsBody?.linearDamping = 0
         addChild(rainDrop)
         
+    }
+    
+    func didBegin(_ contact: SKPhysicsContact) {
+        if (contact.bodyA.node?.name == "ground" && contact.bodyB.node?.name == "rainDrop") || (contact.bodyA.node?.name == "rainDrop" && contact.bodyB.node?.name == "ground") {
+            rainDrop.removeFromParent()
+            print("it worked")
+        }
     }
     
 }
