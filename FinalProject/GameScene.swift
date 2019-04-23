@@ -22,6 +22,14 @@ class GameScene: SKScene, SKPhysicsContactDelegate {
     
     var sceneController = SKView()
     
+    
+    let PlayerCategory   : UInt32 = 0x1 << 0
+    let CollisionCategory : UInt32 = 0x1 << 1
+    let EnemyCategory  : UInt32 = 0x1 << 2
+    let ObjectiveCategory : UInt32 = 0x1 << 3
+    let PowerUpCategory : UInt32 = 0x1 << 4
+    
+    
     override func didMove(to view: SKView) {
         self.physicsBody = SKPhysicsBody(edgeLoopFrom: self.frame)
         physicsWorld.contactDelegate = self
@@ -61,6 +69,9 @@ class GameScene: SKScene, SKPhysicsContactDelegate {
         
         ground.physicsBody = SKPhysicsBody(rectangleOf: ground.size)
         ground.physicsBody?.isDynamic = false
+        
+        ground.physicsBody!.contactTestBitMask = CollisionCategory
+        
         addChild(ground)
     }
     
@@ -77,6 +88,9 @@ class GameScene: SKScene, SKPhysicsContactDelegate {
         rainDrop.physicsBody?.affectedByGravity = false
         rainDrop.physicsBody?.restitution = 1
         rainDrop.physicsBody?.linearDamping = 0
+        
+        rainDrop.physicsBody!.contactTestBitMask = CollisionCategory
+        
         addChild(rainDrop)
     }
     
