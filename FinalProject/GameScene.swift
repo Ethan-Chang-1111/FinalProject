@@ -20,13 +20,25 @@ class GameScene: SKScene, SKPhysicsContactDelegate {
     
     var rainDrops = [SKSpriteNode()]
     
+    var sceneController = SKView()
+    
     override func didMove(to view: SKView) {
         self.physicsBody = SKPhysicsBody(edgeLoopFrom: self.frame)
         physicsWorld.contactDelegate = self
         
+
         
         createStoryboardObjects()
         rainDrop.physicsBody?.applyImpulse(CGVector(dx: 5, dy: 0))
+    }
+    
+    func test(){
+        let scene = SKScene(fileNamed: "Title")
+        
+        // Now present the scene in a view.
+        sceneController.presentScene(scene)//is being called, but no work
+        print("aubfoubfsofabjfa")
+        
     }
     
     func createStoryboardObjects() {
@@ -36,11 +48,9 @@ class GameScene: SKScene, SKPhysicsContactDelegate {
     }
     
     func createBackground() {
-        
-        
         background.position = CGPoint(x: 0, y: 0)
         background.zPosition = -1
-        addChild(background)
+        //addChild(background)
     }
     
     func createGround() {
@@ -67,7 +77,11 @@ class GameScene: SKScene, SKPhysicsContactDelegate {
         rainDrop.physicsBody?.restitution = 1
         rainDrop.physicsBody?.linearDamping = 0
         addChild(rainDrop)
-        
+    }
+    
+    override func touchesBegan(_ touches: Set<UITouch>, with event: UIEvent?) {
+        print("fbuiaiusfasfbas;fabs;")
+        test()
     }
     
 }

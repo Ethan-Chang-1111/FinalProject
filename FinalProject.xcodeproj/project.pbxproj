@@ -15,6 +15,7 @@
 		425CFE492264E4AD00C4091A /* Main.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = 425CFE472264E4AD00C4091A /* Main.storyboard */; };
 		425CFE4B2264E4B200C4091A /* Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = 425CFE4A2264E4B200C4091A /* Assets.xcassets */; };
 		425CFE4E2264E4B200C4091A /* LaunchScreen.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = 425CFE4C2264E4B200C4091A /* LaunchScreen.storyboard */; };
+		42C46885226F7124002D9217 /* TitleScreen.sks in Resources */ = {isa = PBXBuildFile; fileRef = 42C46884226F7124002D9217 /* TitleScreen.sks */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXFileReference section */
@@ -28,6 +29,7 @@
 		425CFE4A2264E4B200C4091A /* Assets.xcassets */ = {isa = PBXFileReference; lastKnownFileType = folder.assetcatalog; path = Assets.xcassets; sourceTree = "<group>"; };
 		425CFE4D2264E4B200C4091A /* Base */ = {isa = PBXFileReference; lastKnownFileType = file.storyboard; name = Base; path = Base.lproj/LaunchScreen.storyboard; sourceTree = "<group>"; };
 		425CFE4F2264E4B200C4091A /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
+		42C46884226F7124002D9217 /* TitleScreen.sks */ = {isa = PBXFileReference; lastKnownFileType = file.sks; path = TitleScreen.sks; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -62,6 +64,7 @@
 			children = (
 				425CFE3D2264E4AD00C4091A /* AppDelegate.swift */,
 				425CFE3F2264E4AD00C4091A /* GameScene.sks */,
+				42C46884226F7124002D9217 /* TitleScreen.sks */,
 				425CFE412264E4AD00C4091A /* Actions.sks */,
 				425CFE432264E4AD00C4091A /* GameScene.swift */,
 				425CFE452264E4AD00C4091A /* GameViewController.swift */,
@@ -135,6 +138,7 @@
 				425CFE402264E4AD00C4091A /* GameScene.sks in Resources */,
 				425CFE4B2264E4B200C4091A /* Assets.xcassets in Resources */,
 				425CFE4E2264E4B200C4091A /* LaunchScreen.storyboard in Resources */,
+				42C46885226F7124002D9217 /* TitleScreen.sks in Resources */,
 				425CFE422264E4AD00C4091A /* Actions.sks in Resources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
