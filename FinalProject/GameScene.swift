@@ -20,8 +20,25 @@ class GameScene: SKScene, SKPhysicsContactDelegate {
     
     var rainDrops = [SKSpriteNode()]
     
+    var sceneController = SKView()
+    
     override func didMove(to view: SKView) {
+        self.physicsBody = SKPhysicsBody(edgeLoopFrom: self.frame)
+        physicsWorld.contactDelegate = self
+        
+
+        
         createStoryboardObjects()
+        rainDrop.physicsBody?.applyImpulse(CGVector(dx: 0, dy: 5))
+    }
+    
+    func test(){
+        let scene = SKScene(fileNamed: "Title")
+        
+        // Now present the scene in a view.
+        sceneController.presentScene(scene)//is being called, but no work
+        print("aubfoubfsofabjfa")
+        
     }
     
     func createStoryboardObjects() {
@@ -32,13 +49,16 @@ class GameScene: SKScene, SKPhysicsContactDelegate {
     
     func createBackground() {
         background.position = CGPoint(x: 0, y: 0)
-        addChild(background)
+        background.zPosition = -1
+        //addChild(background)
     }
     
     func createGround() {
-        ground = SKSpriteNode(color: UIColor.green, size: CGSize(width: 50, height: frame.height))
-        ground.position = CGPoint(x: frame.maxX, y: frame.midY)
+        ground = SKSpriteNode(color: UIColor.green, size: CGSize(width: frame.height, height: 50))
+        ground.position = CGPoint(x: frame.midX, y: frame.midY-175)
         ground.name = "ground"
+
+        
         ground.physicsBody = SKPhysicsBody(rectangleOf: ground.size)
         ground.physicsBody?.isDynamic = false
         addChild(ground)
@@ -49,13 +69,27 @@ class GameScene: SKScene, SKPhysicsContactDelegate {
         rainDrop.position = CGPoint(x: frame.midX, y: frame.midY)
         rainDrop.strokeColor = UIColor.black
         rainDrop.fillColor = UIColor.yellow
-        
-        rainDrop.physicsBody?.affectedByGravity = true
+        rainDrop.name = "rainDrop"
+        rainDrop.physicsBody = SKPhysicsBody(circleOfRadius: 10)
         rainDrop.physicsBody?.isDynamic = true
         rainDrop.physicsBody?.usesPreciseCollisionDetection = true
-        
+        rainDrop.physicsBody?.friction = 0
+        rainDrop.physicsBody?.affectedByGravity = false
+        rainDrop.physicsBody?.restitution = 1
+        rainDrop.physicsBody?.linearDamping = 0
         addChild(rainDrop)
-        
+    }
+    
+    override func touchesBegan(_ touches: Set<UITouch>, with event: UIEvent?) {
+        print("fbuiaiusfasfbas;fabs;")
+        test()
+    }
+    
+    func didBegin(_ contact: SKPhysicsContact) {
+        if (contact.bodyA.node?.name == "ground" && contact.bodyB.node?.name == "rainDrop") || (contact.bodyA.node?.name == "rainDrop" && contact.bodyB.node?.name == "ground") {
+            rainDrop.removeFromParent()
+            print("it worked")
+        }
     }
     
 }
