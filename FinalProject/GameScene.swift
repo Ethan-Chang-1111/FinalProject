@@ -105,5 +105,4 @@ class GameScene: SKScene, SKPhysicsContactDelegate {
             print("it worked")
         }
     }
-    
 }
