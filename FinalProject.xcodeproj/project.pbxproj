@@ -7,6 +7,7 @@
 	objects = {
 
 /* Begin PBXBuildFile section */
+		3CEB8CB52270CBE200157D94 /* rick.mp3 in Resources */ = {isa = PBXBuildFile; fileRef = 3CEB8CB42270CBE100157D94 /* rick.mp3 */; };
 		425CFE3E2264E4AD00C4091A /* AppDelegate.swift in Sources */ = {isa = PBXBuildFile; fileRef = 425CFE3D2264E4AD00C4091A /* AppDelegate.swift */; };
 		425CFE402264E4AD00C4091A /* GameScene.sks in Resources */ = {isa = PBXBuildFile; fileRef = 425CFE3F2264E4AD00C4091A /* GameScene.sks */; };
 		425CFE422264E4AD00C4091A /* Actions.sks in Resources */ = {isa = PBXBuildFile; fileRef = 425CFE412264E4AD00C4091A /* Actions.sks */; };
@@ -19,6 +20,7 @@
 /* End PBXBuildFile section */
 
 /* Begin PBXFileReference section */
+		3CEB8CB42270CBE100157D94 /* rick.mp3 */ = {isa = PBXFileReference; lastKnownFileType = audio.mp3; path = rick.mp3; sourceTree = "<group>"; };
 		425CFE3A2264E4AD00C4091A /* FinalProject.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = FinalProject.app; sourceTree = BUILT_PRODUCTS_DIR; };
 		425CFE3D2264E4AD00C4091A /* AppDelegate.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AppDelegate.swift; sourceTree = "<group>"; };
 		425CFE3F2264E4AD00C4091A /* GameScene.sks */ = {isa = PBXFileReference; lastKnownFileType = file.sks; path = GameScene.sks; sourceTree = "<group>"; };
@@ -67,6 +69,7 @@
 				42C46884226F7124002D9217 /* TitleScreen.sks */,
 				425CFE412264E4AD00C4091A /* Actions.sks */,
 				425CFE432264E4AD00C4091A /* GameScene.swift */,
+				3CEB8CB42270CBE100157D94 /* rick.mp3 */,
 				425CFE452264E4AD00C4091A /* GameViewController.swift */,
 				425CFE472264E4AD00C4091A /* Main.storyboard */,
 				425CFE4A2264E4B200C4091A /* Assets.xcassets */,
@@ -135,6 +138,7 @@
 			buildActionMask = 2147483647;
 			files = (
 				425CFE492264E4AD00C4091A /* Main.storyboard in Resources */,
+				3CEB8CB52270CBE200157D94 /* rick.mp3 in Resources */,
 				425CFE402264E4AD00C4091A /* GameScene.sks in Resources */,
 				425CFE4B2264E4B200C4091A /* Assets.xcassets in Resources */,
 				425CFE4E2264E4B200C4091A /* LaunchScreen.storyboard in Resources */,

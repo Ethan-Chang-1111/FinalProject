@@ -17,6 +17,7 @@ class GameScene: SKScene, SKPhysicsContactDelegate {
     var playingGame = true
     var score = 0
     var background = SKSpriteNode(imageNamed: "defaultbackground")
+    var music = SKAudioNode()
     
     var rainDrops = [SKSpriteNode()]
     
@@ -34,7 +35,7 @@ class GameScene: SKScene, SKPhysicsContactDelegate {
         self.physicsBody = SKPhysicsBody(edgeLoopFrom: self.frame)
         physicsWorld.contactDelegate = self
         
-
+        beginMusic()
         
         createStoryboardObjects()
         rainDrop.physicsBody?.applyImpulse(CGVector(dx: 0, dy: 5))
@@ -92,6 +93,11 @@ class GameScene: SKScene, SKPhysicsContactDelegate {
         rainDrop.physicsBody!.contactTestBitMask = CollisionCategory
         
         addChild(rainDrop)
+    }
+    
+    func beginMusic() {
+        music = SKAudioNode(fileNamed: "rick.mp3")
+        addChild(music)
     }
     
     override func touchesBegan(_ touches: Set<UITouch>, with event: UIEvent?) {
