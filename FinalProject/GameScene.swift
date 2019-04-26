@@ -54,6 +54,7 @@ class GameScene: SKScene, SKPhysicsContactDelegate {
         createBackground()
         createGround()
         createDrop()
+        createUmbrella()
     }
     
     func createBackground() {
@@ -95,6 +96,15 @@ class GameScene: SKScene, SKPhysicsContactDelegate {
         addChild(rainDrop)
     }
     
+    func createUmbrella() {
+        umbrella = SKSpriteNode(color: UIColor.white, size: CGSize(width: 100, height: 10))
+        umbrella.position = CGPoint(x: frame.midX, y: frame.midY-60)
+        umbrella.name = "umbrella"
+        umbrella.physicsBody = SKPhysicsBody(rectangleOf: umbrella.size)
+        umbrella.physicsBody?.isDynamic = false
+        addChild(umbrella)
+    }
+    
     func beginMusic() {
         music = SKAudioNode(fileNamed: "rick.mp3")
         addChild(music)
@@ -103,13 +113,31 @@ class GameScene: SKScene, SKPhysicsContactDelegate {
     override func touchesBegan(_ touches: Set<UITouch>, with event: UIEvent?) {
         print("fbuiaiusfasfbas;fabs;")
         test()
+        for touch in touches {
+            if(playingGame){
+                let location = touch.location(in: self)
+                umbrella.position.x = location.x
+            }
+        }
+    }
+    
+    override func touchesMoved(_ touches: Set<UITouch>, with event: UIEvent?) {
+        for touch in touches {
+            let location = touch.location(in: self)
+            umbrella.position.x = location.x
+        }
     }
     
     func didBegin(_ contact: SKPhysicsContact) {
-        if (contact.bodyA.node?.name == "ground" && contact.bodyB.node?.name == "rainDrop") || (contact.bodyA.node?.name == "rainDrop" && contact.bodyB.node?.name == "ground") {
-            rainDrop.removeFromParent()
-            print("it worked")
-        }
+        //if (contact.bodyA.node?.name == "ground" && contact.bodyB.node?.name == "rainDrop") || (contact.bodyA.node?.name == "rainDrop" && contact.bodyB.node?.name == "ground") {
+            //rainDrop.removeFromParent()
+            //print("rain drop removed - ground")
+        //}
+    
+        //if (contact.bodyA.node?.name == "umbrella" && contact.bodyB.node?.name == "rainDrop") || (contact.bodyA.node?.name == "rainDrop" && contact.bodyB.node?.name == "umbrella") {
+        //rainDrop.removeFromParent()
+        //print("rain drop removed - umbrella")
+        //}
     }
     
 }
