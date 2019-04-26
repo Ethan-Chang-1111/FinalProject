@@ -101,8 +101,11 @@ class GameScene: SKScene, SKPhysicsContactDelegate {
     }
     
     override func touchesBegan(_ touches: Set<UITouch>, with event: UIEvent?) {
-        print("fbuiaiusfasfbas;fabs;")
-        test()
+        let titleScreen = TitleScreen(fileNamed: "TitleScreen")
+        titleScreen?.scaleMode = .aspectFill
+        self.view?.presentScene(titleScreen!, transition: SKTransition.fade(withDuration: 0.5 ))
+        //print("fbuiaiusfasfbas;fabs;")
+        //test()
     }
     
     func didBegin(_ contact: SKPhysicsContact) {
@@ -111,4 +114,5 @@ class GameScene: SKScene, SKPhysicsContactDelegate {
             print("it worked")
         }
     }
+    
 }
