@@ -129,6 +129,9 @@ class GameScene: SKScene, SKPhysicsContactDelegate {
                 umbrella.position.x = location.x
             }
         }
+        //let titleScreen = TitleScreen(fileNamed: "TitleScreen")
+        //titleScreen?.scaleMode = .aspectFill
+        //self.view?.presentScene(titleScreen!, transition: SKTransition.fade(withDuration: 0.5 ))
     }
     
     override func touchesMoved(_ touches: Set<UITouch>, with event: UIEvent?) {
