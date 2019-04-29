@@ -17,6 +17,7 @@
 		425CFE4E2264E4B200C4091A /* LaunchScreen.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = 425CFE4C2264E4B200C4091A /* LaunchScreen.storyboard */; };
 		42C46885226F7124002D9217 /* TitleScreen.sks in Resources */ = {isa = PBXBuildFile; fileRef = 42C46884226F7124002D9217 /* TitleScreen.sks */; };
 		8535C2AA2273690700590002 /* TitleScreen.swift in Sources */ = {isa = PBXBuildFile; fileRef = 8535C2A92273690700590002 /* TitleScreen.swift */; };
+		85BB8E1E22775DC60055C700 /* rick.mp3 in Resources */ = {isa = PBXBuildFile; fileRef = 85BB8E1D22775DC40055C700 /* rick.mp3 */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXFileReference section */
@@ -32,6 +33,7 @@
 		425CFE4F2264E4B200C4091A /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
 		42C46884226F7124002D9217 /* TitleScreen.sks */ = {isa = PBXFileReference; lastKnownFileType = file.sks; path = TitleScreen.sks; sourceTree = "<group>"; };
 		8535C2A92273690700590002 /* TitleScreen.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TitleScreen.swift; sourceTree = "<group>"; };
+		85BB8E1D22775DC40055C700 /* rick.mp3 */ = {isa = PBXFileReference; lastKnownFileType = audio.mp3; name = rick.mp3; path = Assets.xcassets/rick.dataset/rick.mp3; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -72,6 +74,7 @@
 				425CFE432264E4AD00C4091A /* GameScene.swift */,
 				425CFE452264E4AD00C4091A /* GameViewController.swift */,
 				425CFE472264E4AD00C4091A /* Main.storyboard */,
+				85BB8E1D22775DC40055C700 /* rick.mp3 */,
 				425CFE4A2264E4B200C4091A /* Assets.xcassets */,
 				425CFE4C2264E4B200C4091A /* LaunchScreen.storyboard */,
 				425CFE4F2264E4B200C4091A /* Info.plist */,
@@ -138,6 +141,7 @@
 			buildActionMask = 2147483647;
 			files = (
 				425CFE492264E4AD00C4091A /* Main.storyboard in Resources */,
+				85BB8E1E22775DC60055C700 /* rick.mp3 in Resources */,
 				425CFE402264E4AD00C4091A /* GameScene.sks in Resources */,
 				425CFE4B2264E4B200C4091A /* Assets.xcassets in Resources */,
 				425CFE4E2264E4B200C4091A /* LaunchScreen.storyboard in Resources */,

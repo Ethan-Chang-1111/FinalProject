@@ -16,8 +16,8 @@ class TitleScreen: SKScene {
     }
     
     override func touchesBegan(_ touches: Set<UITouch>, with event: UIEvent?) {
-        let gameScreen = GameScene(fileNamed: "GameScene")
-        gameScreen?.scaleMode = .aspectFill
-        self.view?.presentScene(gameScreen!, transition: SKTransition.fade(withDuration: 0.5 ))
+        //let gameScreen = GameScene(fileNamed: "GameScene")
+        //gameScreen?.scaleMode = .aspectFill
+        //self.view?.presentScene(gameScreen!, transition: SKTransition.fade(withDuration: 0.5 ))
     }
 }
