@@ -18,6 +18,7 @@ class GameScene: SKScene, SKPhysicsContactDelegate {
     var score = 0
     var background = SKSpriteNode(imageNamed: "defaultbackground")
     var music = SKAudioNode()
+    var runnerVelocity = 0
     
     var rainDrops = [SKSpriteNode()]
     
@@ -39,6 +40,7 @@ class GameScene: SKScene, SKPhysicsContactDelegate {
         
         createStoryboardObjects()
         rainDrop.physicsBody?.applyImpulse(CGVector(dx: 0, dy: 5))
+        runner.physicsBody?.applyImpulse(CGVector(dx: 5, dy: 0))
     }
     
     func test(){
@@ -55,6 +57,7 @@ class GameScene: SKScene, SKPhysicsContactDelegate {
         createGround()
         createDrop()
         createUmbrella()
+        createRunner()
     }
     
     func createBackground() {
@@ -109,6 +112,13 @@ class GameScene: SKScene, SKPhysicsContactDelegate {
         music = SKAudioNode(fileNamed: "rick.mp3")
         addChild(music)
     }
+    
+    func createRunner() {
+        runner = SKSpriteNode(color: UIColor.orange, size: CGSize(width: 25, height: 25))
+        runner.position = CGPoint(x: frame.midX, y: frame.midY-130)
+        addChild(runner)
+    }
+    
     
     override func touchesBegan(_ touches: Set<UITouch>, with event: UIEvent?) {
         print("fbuiaiusfasfbas;fabs;")
