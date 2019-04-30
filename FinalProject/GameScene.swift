@@ -19,14 +19,13 @@ class GameScene: SKScene, SKPhysicsContactDelegate {
     var background = SKSpriteNode(imageNamed: "defaultbackground")
     var music = SKAudioNode()
     
-    var rainDrops = [SKSpriteNode()]
+    var rainDrops = [SKShapeNode()]
     
     var sceneController = SKView()
     
-    
-    let PlayerCategory   : UInt32 = 0x1 << 0
-    let CollisionCategory : UInt32 = 0x1 << 1
-    let EnemyCategory  : UInt32 = 0x1 << 2
+    let EnemyCategory   : UInt32 = 0x1 << 0
+    let PlayerCategory : UInt32 = 0x1 << 1
+    let CollisionCategory  : UInt32 = 0x1 << 2
     let ObjectiveCategory : UInt32 = 0x1 << 3
     let PowerUpCategory : UInt32 = 0x1 << 4
     
@@ -40,19 +39,19 @@ class GameScene: SKScene, SKPhysicsContactDelegate {
         rainDrop.physicsBody?.applyImpulse(CGVector(dx: 0, dy: 5))
     }
     /*
-    func test(){
-        let scene = SKScene(fileNamed: "Title")
-        
-        // Now present the scene in a view.
-        sceneController.presentScene(scene)//is being called, but no work
-        print("aubfoubfsofabjfa")
-        
-    }*/
+     func test(){
+     let scene = SKScene(fileNamed: "Title")
+     
+     // Now present the scene in a view.
+     sceneController.presentScene(scene)//is being called, but no work
+     print("aubfoubfsofabjfa")
+     
+     }*/
     
     func createStoryboardObjects() {
         createBackground()
         createGround()
-        createDrop(position:  CGPoint(x:frame.midX,y:frame.maxY))
+        createDrop(position:  CGPoint(x:frame.midX,y:frame.maxY), testNum: 0)
         createUmbrella()
     }
     
@@ -66,7 +65,7 @@ class GameScene: SKScene, SKPhysicsContactDelegate {
         ground = SKSpriteNode(color: UIColor.green, size: CGSize(width: frame.height, height: 50))
         ground.position = CGPoint(x: frame.midX, y: frame.midY-175)
         ground.name = "ground"
-
+        
         
         ground.physicsBody = SKPhysicsBody(rectangleOf: ground.size)
         ground.physicsBody?.isDynamic = false
@@ -76,12 +75,12 @@ class GameScene: SKScene, SKPhysicsContactDelegate {
         addChild(ground)
     }
     
-    func createDrop(position:CGPoint){
+    func createDrop(position:CGPoint,testNum:Int){
         var tempDrop = SKShapeNode(circleOfRadius: 10)
         tempDrop.position = position
         tempDrop.strokeColor = UIColor.black
         tempDrop.fillColor = UIColor.yellow
-        tempDrop.name = "rainDrop"
+        tempDrop.name = String(testNum)
         tempDrop.physicsBody = SKPhysicsBody(circleOfRadius: 10)
         tempDrop.physicsBody?.isDynamic = true
         tempDrop.physicsBody?.usesPreciseCollisionDetection = true
@@ -90,10 +89,11 @@ class GameScene: SKScene, SKPhysicsContactDelegate {
         tempDrop.physicsBody?.restitution = 1
         tempDrop.physicsBody?.linearDamping = 0
         
-        tempDrop.physicsBody!.contactTestBitMask = CollisionCategory
-        rainDrop = tempDrop
-        addChild(rainDrop)
-        rainDrop.physicsBody?.applyImpulse(CGVector(dx: 0, dy: 5))
+        tempDrop.physicsBody!.contactTestBitMask = EnemyCategory
+        
+        addChild(tempDrop)
+        rainDrops.append(tempDrop)
+        tempDrop.physicsBody?.applyImpulse(CGVector(dx: 0, dy: 5))
     }
     
     func createUmbrella() {
@@ -134,18 +134,36 @@ class GameScene: SKScene, SKPhysicsContactDelegate {
     func didBegin(_ contact: SKPhysicsContact) {
         print("hello")
         
+        var drop = contact.bodyB
+        var convieniance = false//true-dealing with enemy, false not dealing with enemy
+        if contact.bodyA.categoryBitMask == EnemyCategory{
+            drop = contact.bodyA
+            convieniance = true
+        }else if contact.bodyB.categoryBitMask == EnemyCategory {
+            drop = contact.bodyB
+            convieniance = true
+            
+        }
+        
+        if(convieniance){
+            rainDrops[Int((drop.node?.name)!)!].removeFromParent()
+           createDrop(position:  CGPoint(x:frame.midX,y:frame.maxY), testNum: 1)
+            
+        }
+        
+        /*
         if (contact.bodyA.node?.name == "ground" && contact.bodyB.node?.name == "rainDrop"){
-            rainDrop.removeFromParent()
+            //rainDrop.removeFromParent()
             createDrop(position:  CGPoint(x:frame.midX,y:frame.maxY))
         }else if(contact.bodyA.node?.name == "rainDrop" && contact.bodyB.node?.name == "ground") {
-            rainDrop.removeFromParent()
+            //rainDrop.removeFromParent()
             createDrop(position: CGPoint(x:frame.midX,y:frame.maxY))
         }
         
         if (contact.bodyA.node?.name == "umbrella" && contact.bodyB.node?.name == "rainDrop") || (contact.bodyA.node?.name == "rainDrop" && contact.bodyB.node?.name == "umbrella") {
             //rainDrop.removeFromParent()
             print("rain drop removed - umbrella")
-        }
+        }*/
     }
     
 }
