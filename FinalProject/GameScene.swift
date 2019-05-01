@@ -20,6 +20,9 @@ class GameScene: SKScene, SKPhysicsContactDelegate {
     var music = SKAudioNode()
     var runnerVelocity = 0
     
+    var counter = 0
+    var timer = Timer()
+    
     var rainDrops = [SKSpriteNode()]
     
     var sceneController = SKView()
@@ -37,7 +40,6 @@ class GameScene: SKScene, SKPhysicsContactDelegate {
         physicsWorld.contactDelegate = self
         
         beginMusic()
-        
         createStoryboardObjects()
         rainDrop.physicsBody?.applyImpulse(CGVector(dx: 0, dy: 5))
         runner.physicsBody?.applyImpulse(CGVector(dx: 5, dy: 0))
@@ -58,6 +60,7 @@ class GameScene: SKScene, SKPhysicsContactDelegate {
         createDrop()
         createUmbrella()
         createRunner()
+        startTimer()
     }
     
     func createBackground() {
@@ -78,6 +81,18 @@ class GameScene: SKScene, SKPhysicsContactDelegate {
         ground.physicsBody!.contactTestBitMask = CollisionCategory
         
         addChild(ground)
+    }
+    
+    func startTimer() {
+        timer = Timer.scheduledTimer(timeInterval: 1, target: self, selector: #selector(updateTimer), userInfo: nil, repeats: true)
+    }
+    
+    @objc func updateTimer() {
+        counter += 1
+        print(counter)
+        if counter % 2 == 0 {
+            changeRunnerMotion()
+        }
     }
     
     func createDrop(){
@@ -113,12 +128,27 @@ class GameScene: SKScene, SKPhysicsContactDelegate {
         addChild(music)
     }
     
-    func createRunner() {
-        runner = SKSpriteNode(color: UIColor.orange, size: CGSize(width: 25, height: 25))
-        runner.position = CGPoint(x: frame.midX, y: frame.midY-130)
-        addChild(runner)
+    func changeRunnerMotion() {
+        let velocity = Int.random(in: -10 ... 10)
+        runner.physicsBody?.velocity = (CGVector(dx: 0, dy: 0))
+        runner.physicsBody?.applyImpulse(CGVector(dx: velocity, dy: 0))
     }
     
+    func createRunner() {
+        runner = SKShapeNode(rectOf: CGSize(width: 25, height: 25))
+        runner.strokeColor = UIColor.black
+        runner.fillColor = UIColor.orange
+        runner.name = "runner"
+        runner.physicsBody = SKPhysicsBody(rectangleOf: CGSize(width: 25, height: 25))
+        runner.position = CGPoint(x: frame.midX, y: frame.midY-130)
+        runner.physicsBody?.isDynamic = true
+        runner.physicsBody?.usesPreciseCollisionDetection = true
+        runner.physicsBody?.friction = 0
+        runner.physicsBody?.affectedByGravity = false
+        runner.physicsBody?.restitution = 1
+        runner.physicsBody?.linearDamping = 0
+        addChild(runner)
+    }
     
     override func touchesBegan(_ touches: Set<UITouch>, with event: UIEvent?) {
         print("fbuiaiusfasfbas;fabs;")
