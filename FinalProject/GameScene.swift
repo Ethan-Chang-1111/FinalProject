@@ -51,7 +51,7 @@ class GameScene: SKScene, SKPhysicsContactDelegate {
     func createStoryboardObjects() {
         createBackground()
         createGround()
-        createDrop(position:  CGPoint(x:frame.midX,y:frame.maxY), testNum: 0)
+        createDrop(position:  CGPoint(x:frame.midX,y:frame.maxY))
         createUmbrella()
     }
     
@@ -75,12 +75,12 @@ class GameScene: SKScene, SKPhysicsContactDelegate {
         addChild(ground)
     }
     
-    func createDrop(position:CGPoint,testNum:Int){
+    func createDrop(position:CGPoint){
         var tempDrop = SKShapeNode(circleOfRadius: 10)
         tempDrop.position = position
         tempDrop.strokeColor = UIColor.black
         tempDrop.fillColor = UIColor.yellow
-        tempDrop.name = String(testNum)
+        tempDrop.name = "re"
         tempDrop.physicsBody = SKPhysicsBody(circleOfRadius: 10)
         tempDrop.physicsBody?.isDynamic = true
         tempDrop.physicsBody?.usesPreciseCollisionDetection = true
@@ -134,22 +134,17 @@ class GameScene: SKScene, SKPhysicsContactDelegate {
     func didBegin(_ contact: SKPhysicsContact) {
         print("hello")
         
-        var drop = contact.bodyB
-        var convieniance = false//true-dealing with enemy, false not dealing with enemy
-        if contact.bodyA.categoryBitMask == EnemyCategory{
-            drop = contact.bodyA
-            convieniance = true
-        }else if contact.bodyB.categoryBitMask == EnemyCategory {
-            drop = contact.bodyB
-            convieniance = true
-            
+        if (contact.bodyA.node?.name == "ground" && contact.bodyB.node?.name == "re"){
+            contact.bodyB.node?.removeFromParent()
+            createDrop(position:  CGPoint(x:frame.midX,y:frame.maxY))
+        }else if(contact.bodyA.node?.name == "re" && contact.bodyB.node?.name == "ground") {
+            //rainDrop.removeFromParent()
+            createDrop(position: CGPoint(x:frame.midX,y:frame.maxY))
         }
         
-        if(convieniance){
-            rainDrops[Int((drop.node?.name)!)!].removeFromParent()
-           createDrop(position:  CGPoint(x:frame.midX,y:frame.maxY), testNum: 1)
+           createDrop(position:  CGPoint(x:frame.midX,y:frame.maxY))
             
-        }
+        
         
         /*
         if (contact.bodyA.node?.name == "ground" && contact.bodyB.node?.name == "rainDrop"){
