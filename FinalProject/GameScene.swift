@@ -159,6 +159,7 @@ class GameScene: SKScene, SKPhysicsContactDelegate {
         addChild(runner)
     }
     
+    
     override func touchesBegan(_ touches: Set<UITouch>, with event: UIEvent?) {
         print("touch")
         //test()
