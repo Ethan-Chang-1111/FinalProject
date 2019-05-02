@@ -93,7 +93,7 @@ class GameScene: SKScene, SKPhysicsContactDelegate {
         }
         
         let random = CGFloat(Double.random(in: 0..<1))
-        if(counter % 10 == 0){
+        if(counter % 2 == 0){
             print(random)
             createDrop(position: CGPoint(x: frame.maxX * random, y: frame.maxY))
             
