@@ -19,5 +19,6 @@ class TitleScreen: SKScene {
         let gameScreen = GameScene(fileNamed: "GameScene")
         gameScreen?.scaleMode = .aspectFill
         self.view?.presentScene(gameScreen!, transition: SKTransition.fade(withDuration: 0.5 ))
+        
     }
 }
