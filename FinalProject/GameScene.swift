@@ -30,7 +30,6 @@ class GameScene: SKScene, SKPhysicsContactDelegate {
     let ObjectiveCategory : UInt32 = 0x1 << 3
     let PowerUpCategory : UInt32 = 0x1 << 4
     
-    
     override func didMove(to view: SKView) {
         self.physicsBody = SKPhysicsBody(edgeLoopFrom: self.frame)
         physicsWorld.contactDelegate = self
