@@ -19,6 +19,7 @@ class GameScene: SKScene, SKPhysicsContactDelegate {
     var background = SKSpriteNode(imageNamed: "defaultbackground")
     var music = SKAudioNode()
     var runnerVelocity = 0
+    var umbrellaPowerup = SKShapeNode()
     
     var counter = 0
     var timer = Timer()
@@ -92,6 +93,8 @@ class GameScene: SKScene, SKPhysicsContactDelegate {
             changeRunnerMotion()
         }
         
+        if counter == 3 {createPowerup()}
+        
         let random = CGFloat(Double.random(in: 0..<1))
         if(counter % 2 == 0){
             print(random)
@@ -123,12 +126,35 @@ class GameScene: SKScene, SKPhysicsContactDelegate {
         tempDrop.physicsBody?.applyImpulse(CGVector(dx: 0, dy: 5))
     }
     
+    func createPowerup() {
+        let powerupIdentity = 0
+        if powerupIdentity == 0 {
+            umbrellaPowerup.strokeColor = UIColor.green
+            umbrellaPowerup.fillColor = UIColor.white
+            umbrellaPowerup.name = "umbrellaPowerup"
+            umbrellaPowerup.physicsBody = SKPhysicsBody(circleOfRadius: 7)
+            umbrellaPowerup.physicsBody?.isDynamic = true
+            umbrellaPowerup.physicsBody?.usesPreciseCollisionDetection = true
+            umbrellaPowerup.physicsBody?.friction = 0
+            umbrellaPowerup.physicsBody?.affectedByGravity = true
+            umbrellaPowerup.physicsBody?.restitution = 1
+            umbrellaPowerup.physicsBody?.linearDamping = 0
+            umbrellaPowerup.physicsBody!.contactTestBitMask = PowerUpCategory
+            //addChild(umbrellaPowerup)
+            
+            umbrella.size = CGSize(width: 200, height: 10)
+        }
+    }
+
+    
     func createUmbrella() {
         umbrella = SKSpriteNode(color: UIColor.white, size: CGSize(width: 100, height: 10))
         umbrella.position = CGPoint(x: frame.midX, y: frame.midY-60)
         umbrella.name = "umbrella"
         umbrella.physicsBody = SKPhysicsBody(rectangleOf: umbrella.size)
         umbrella.physicsBody?.isDynamic = false
+        umbrella.physicsBody?.contactTestBitMask = PowerUpCategory
+        umbrella.physicsBody?.contactTestBitMask = CollisionCategory
         addChild(umbrella)
     }
     
@@ -156,6 +182,7 @@ class GameScene: SKScene, SKPhysicsContactDelegate {
         runner.physicsBody?.affectedByGravity = false
         runner.physicsBody?.restitution = 1
         runner.physicsBody?.linearDamping = 0
+        runner.physicsBody?.contactTestBitMask = ObjectiveCategory
         addChild(runner)
     }
     
@@ -182,7 +209,6 @@ class GameScene: SKScene, SKPhysicsContactDelegate {
     }
     
     func didBegin(_ contact: SKPhysicsContact) {
-        print("hello")
         
         if (contact.bodyA.node?.name == "ground" && contact.bodyB.node?.name == "re"){
             contact.bodyB.node?.removeFromParent()
