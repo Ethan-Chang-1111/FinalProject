@@ -23,8 +23,8 @@ class GameScene: SKScene, SKPhysicsContactDelegate {
     var counter = 0
     var timer = Timer()
     
-    var rainDrops = [SKShapeNode()]
     
+    var rainDrops = [SKShapeNode()]
     var sceneController = SKView()
     
     let EnemyCategory   : UInt32 = 0x1 << 0
@@ -92,7 +92,7 @@ class GameScene: SKScene, SKPhysicsContactDelegate {
             changeRunnerMotion()
         }
         
-        let random = CGFloat(Double.random(in: 0..<1))
+        let random = CGFloat(Double.random(in: -1..<1))
         if(counter % 2 == 0){
             print(random)
             createDrop(position: CGPoint(x: frame.maxX * random, y: frame.maxY))
@@ -107,7 +107,7 @@ class GameScene: SKScene, SKPhysicsContactDelegate {
         tempDrop.position = position
         tempDrop.strokeColor = UIColor.black
         tempDrop.fillColor = UIColor.yellow
-        tempDrop.name = "re"
+        tempDrop.name = "drop"
         tempDrop.physicsBody = SKPhysicsBody(circleOfRadius: 10)
         tempDrop.physicsBody?.isDynamic = true
         tempDrop.physicsBody?.usesPreciseCollisionDetection = true
@@ -182,32 +182,37 @@ class GameScene: SKScene, SKPhysicsContactDelegate {
     }
     
     func didBegin(_ contact: SKPhysicsContact) {
-        print("hello")
+        print()
         
-        if (contact.bodyA.node?.name == "ground" && contact.bodyB.node?.name == "re"){
-            contact.bodyB.node?.removeFromParent()
+        if (contact.bodyA.node?.name == "ground" && contact.bodyB.node?.name == "drop"){
             createDrop(position: CGPoint(x:(contact.bodyB.node?.position.x)!,y:frame.maxY))
+            contact.bodyB.node?.removeFromParent()
             
-        }else if(contact.bodyA.node?.name == "re" && contact.bodyB.node?.name == "ground") {
-            contact.bodyA.node?.removeFromParent()
+        }else if(contact.bodyA.node?.name == "drop" && contact.bodyB.node?.name == "ground") {
             createDrop(position: CGPoint(x:(contact.bodyA.node?.position.x)!,y:frame.maxY))
+            contact.bodyA.node?.removeFromParent()
+        }
+        
+        
+        if (contact.bodyA.node?.name == "umbrella" && contact.bodyB.node?.name == "drop"){
+            score += 1
+            contact.bodyB.node?.removeFromParent()
+        }else if(contact.bodyA.node?.name == "drop" && contact.bodyB.node?.name == "umbrella") {
+            score += 1
+            contact.bodyA.node?.removeFromParent()
+        }
+        
+        if (contact.bodyA.node?.name == "runner" && contact.bodyB.node?.name == "drop"){
+            score -= 1
+            contact.bodyB.node?.removeFromParent()
+        }else if(contact.bodyA.node?.name == "drop" && contact.bodyB.node?.name == "runner") {
+            score -= 1
+            contact.bodyA.node?.removeFromParent()
         }
         
         
         
-        /*
-        if (contact.bodyA.node?.name == "ground" && contact.bodyB.node?.name == "rainDrop"){
-            //rainDrop.removeFromParent()
-            createDrop(position:  CGPoint(x:frame.midX,y:frame.maxY))
-        }else if(contact.bodyA.node?.name == "rainDrop" && contact.bodyB.node?.name == "ground") {
-            //rainDrop.removeFromParent()
-            createDrop(position: CGPoint(x:frame.midX,y:frame.maxY))
-        }
         
-        if (contact.bodyA.node?.name == "umbrella" && contact.bodyB.node?.name == "rainDrop") || (contact.bodyA.node?.name == "rainDrop" && contact.bodyB.node?.name == "umbrella") {
-            //rainDrop.removeFromParent()
-            print("rain drop removed - umbrella")
-        }*/
     }
     
 }
