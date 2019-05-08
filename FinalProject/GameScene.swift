@@ -11,7 +11,7 @@ import GameplayKit
 
 class GameScene: SKScene, SKPhysicsContactDelegate {
     var umbrella = SKSpriteNode()
-    var runner = SKShapeNode()
+    var runner = SKSpriteNode()
     var rainDrop = SKShapeNode()
     var ground = SKSpriteNode()
     var playingGame = true
@@ -19,12 +19,13 @@ class GameScene: SKScene, SKPhysicsContactDelegate {
     var background = SKSpriteNode(imageNamed: "defaultbackground")
     var music = SKAudioNode()
     var runnerVelocity = 0
+    //var umbrellaPowerup = SKShapeNode()
     
     var counter = 0
     var timer = Timer()
     
-    var rainDrops = [SKShapeNode()]
     
+    var rainDrops = [SKShapeNode()]
     var sceneController = SKView()
     
     let EnemyCategory   : UInt32 = 0x1 << 0
@@ -91,15 +92,19 @@ class GameScene: SKScene, SKPhysicsContactDelegate {
         if counter % 2 == 0 {
             changeRunnerMotion()
         }
+        if counter % 15 == 0 {
+            changeRunnerMotionExtreme()
+            print("EXTREME")
+        }
         
-        let random = CGFloat(Double.random(in: 0..<1))
+        //if counter == 3 {createPowerup()}
+        
+        let random = CGFloat(Double.random(in: -1..<1))
         if(counter % 2 == 0){
             print(random)
             createDrop(position: CGPoint(x: frame.maxX * random, y: frame.maxY))
             
         }
-        
-        
     }
     
     func createDrop(position:CGPoint){
@@ -107,7 +112,7 @@ class GameScene: SKScene, SKPhysicsContactDelegate {
         tempDrop.position = position
         tempDrop.strokeColor = UIColor.black
         tempDrop.fillColor = UIColor.yellow
-        tempDrop.name = "re"
+        tempDrop.name = "drop"
         tempDrop.physicsBody = SKPhysicsBody(circleOfRadius: 10)
         tempDrop.physicsBody?.isDynamic = true
         tempDrop.physicsBody?.usesPreciseCollisionDetection = true
@@ -122,13 +127,36 @@ class GameScene: SKScene, SKPhysicsContactDelegate {
         //rainDrops.append(tempDrop)
         tempDrop.physicsBody?.applyImpulse(CGVector(dx: 0, dy: 5))
     }
+    /*
+    func createPowerup() {
+        let powerupIdentity = 0
+        if powerupIdentity == 0 {
+            umbrellaPowerup.strokeColor = UIColor.green
+            umbrellaPowerup.fillColor = UIColor.white
+            umbrellaPowerup.name = "umbrellaPowerup"
+            umbrellaPowerup.physicsBody = SKPhysicsBody(circleOfRadius: 7)
+            umbrellaPowerup.physicsBody?.isDynamic = true
+            umbrellaPowerup.physicsBody?.usesPreciseCollisionDetection = true
+            umbrellaPowerup.physicsBody?.friction = 0
+            umbrellaPowerup.physicsBody?.affectedByGravity = true
+            umbrellaPowerup.physicsBody?.restitution = 1
+            umbrellaPowerup.physicsBody?.linearDamping = 0
+            umbrellaPowerup.physicsBody!.contactTestBitMask = PowerUpCategory
+            //addChild(umbrellaPowerup)
+            
+            umbrella.size = CGSize(width: 200, height: 10)
+        }
+    }*/
+
     
     func createUmbrella() {
-        umbrella = SKSpriteNode(color: UIColor.white, size: CGSize(width: 100, height: 10))
+        umbrella = SKSpriteNode(color: UIColor.white, size: CGSize(width: 120, height: 10))
         umbrella.position = CGPoint(x: frame.midX, y: frame.midY-60)
         umbrella.name = "umbrella"
         umbrella.physicsBody = SKPhysicsBody(rectangleOf: umbrella.size)
         umbrella.physicsBody?.isDynamic = false
+        //umbrella.physicsBody?.contactTestBitMask = PowerUpCategory
+        //umbrella.physicsBody?.contactTestBitMask = CollisionCategory
         addChild(umbrella)
     }
     
@@ -138,24 +166,35 @@ class GameScene: SKScene, SKPhysicsContactDelegate {
     }
     
     func changeRunnerMotion() {
-        let velocity = Int.random(in: -10 ... 10)
-        runner.physicsBody?.velocity = (CGVector(dx: 0, dy: 0))
+        let velocity = Int.random(in: -20 ... 20)
+        runner.physicsBody?.velocity = CGVector(dx: 0, dy: 0)
+        runner.physicsBody?.applyImpulse(CGVector(dx: velocity, dy: 0))
+    }
+    
+    func changeRunnerMotionExtreme() {
+        let velocity = Int.random(in: -50 ... 50)
+        runner.physicsBody?.velocity = CGVector(dx: 0, dy: 0)
         runner.physicsBody?.applyImpulse(CGVector(dx: velocity, dy: 0))
     }
     
     func createRunner() {
-        runner = SKShapeNode(rectOf: CGSize(width: 25, height: 25))
-        runner.strokeColor = UIColor.black
-        runner.fillColor = UIColor.orange
+        runner.texture = SKTexture(imageNamed: "marcos")
+        runner.size = CGSize(width: 50, height: 50)
         runner.name = "runner"
-        runner.physicsBody = SKPhysicsBody(rectangleOf: CGSize(width: 25, height: 25))
-        runner.position = CGPoint(x: frame.midX, y: frame.midY-130)
+        runner.physicsBody = SKPhysicsBody(rectangleOf: CGSize(width: 50, height: 50))
+        runner.position = CGPoint(x: frame.midX, y: frame.midY-110)
         runner.physicsBody?.isDynamic = true
         runner.physicsBody?.usesPreciseCollisionDetection = true
         runner.physicsBody?.friction = 0
         runner.physicsBody?.affectedByGravity = false
         runner.physicsBody?.restitution = 1
         runner.physicsBody?.linearDamping = 0
+        runner.physicsBody?.allowsRotation = false
+        let Yrange = SKRange(lowerLimit: frame.midY-110, upperLimit: frame.midY-110)
+        let Xrange = SKRange(lowerLimit: frame.minX, upperLimit: frame.maxX)
+        let lockToCenter = SKConstraint.positionX(Xrange, y: Yrange)
+        runner.constraints = [ lockToCenter ]
+        //runner.physicsBody?.contactTestBitMask = ObjectiveCategory
         addChild(runner)
     }
     
@@ -182,32 +221,38 @@ class GameScene: SKScene, SKPhysicsContactDelegate {
     }
     
     func didBegin(_ contact: SKPhysicsContact) {
-        print("hello")
+        print()
         
-        if (contact.bodyA.node?.name == "ground" && contact.bodyB.node?.name == "re"){
-            contact.bodyB.node?.removeFromParent()
+        if (contact.bodyA.node?.name == "ground" && contact.bodyB.node?.name == "drop"){
             createDrop(position: CGPoint(x:(contact.bodyB.node?.position.x)!,y:frame.maxY))
+            contact.bodyB.node?.removeFromParent()
             
-        }else if(contact.bodyA.node?.name == "re" && contact.bodyB.node?.name == "ground") {
-            contact.bodyA.node?.removeFromParent()
+        }else if(contact.bodyA.node?.name == "drop" && contact.bodyB.node?.name == "ground") {
             createDrop(position: CGPoint(x:(contact.bodyA.node?.position.x)!,y:frame.maxY))
+            contact.bodyA.node?.removeFromParent()
+        }
+        
+        
+        if (contact.bodyA.node?.name == "umbrella" && contact.bodyB.node?.name == "drop"){
+            score += 1
+            contact.bodyB.node?.removeFromParent()
+        }else if(contact.bodyA.node?.name == "drop" && contact.bodyB.node?.name == "umbrella") {
+            score += 1
+            contact.bodyA.node?.removeFromParent()
+        }
+        
+        if (contact.bodyA.node?.name == "runner" && contact.bodyB.node?.name == "drop"){
+            score -= 1
+            contact.bodyB.node?.removeFromParent()
+        }else if(contact.bodyA.node?.name == "drop" && contact.bodyB.node?.name == "runner") {
+            score -= 1
+            contact.bodyA.node?.removeFromParent()
+            
         }
         
         
         
-        /*
-        if (contact.bodyA.node?.name == "ground" && contact.bodyB.node?.name == "rainDrop"){
-            //rainDrop.removeFromParent()
-            createDrop(position:  CGPoint(x:frame.midX,y:frame.maxY))
-        }else if(contact.bodyA.node?.name == "rainDrop" && contact.bodyB.node?.name == "ground") {
-            //rainDrop.removeFromParent()
-            createDrop(position: CGPoint(x:frame.midX,y:frame.maxY))
-        }
         
-        if (contact.bodyA.node?.name == "umbrella" && contact.bodyB.node?.name == "rainDrop") || (contact.bodyA.node?.name == "rainDrop" && contact.bodyB.node?.name == "umbrella") {
-            //rainDrop.removeFromParent()
-            print("rain drop removed - umbrella")
-        }*/
     }
     
 }
