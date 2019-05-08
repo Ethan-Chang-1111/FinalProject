@@ -208,6 +208,7 @@ class GameScene: SKScene, SKPhysicsContactDelegate {
         }else if(contact.bodyA.node?.name == "drop" && contact.bodyB.node?.name == "runner") {
             score -= 1
             contact.bodyA.node?.removeFromParent()
+            
         }
         
         
