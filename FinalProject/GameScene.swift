@@ -28,13 +28,14 @@ class GameScene: SKScene, SKPhysicsContactDelegate {
     var timer = Timer()
     
     
+    
     var rainDrops = [SKShapeNode()]
     var sceneController = SKView()
     
-    let EnemyCategory   : UInt32 = 0x1 << 0
+    let DropCategory   : UInt32 = 0x1 << 0
     let PlayerCategory : UInt32 = 0x1 << 1
-    let CollisionCategory  : UInt32 = 0x1 << 2
-    let ObjectiveCategory : UInt32 = 0x1 << 3
+    let GroundCategory  : UInt32 = 0x1 << 2
+    let RunnerCategory : UInt32 = 0x1 << 3
     let PowerUpCategory : UInt32 = 0x1 << 4
     
     override func didMove(to view: SKView) {
@@ -80,7 +81,7 @@ class GameScene: SKScene, SKPhysicsContactDelegate {
         ground.physicsBody = SKPhysicsBody(rectangleOf: ground.size)
         ground.physicsBody?.isDynamic = false
         
-        ground.physicsBody!.contactTestBitMask = CollisionCategory
+        ground.physicsBody!.categoryBitMask = GroundCategory
         
         addChild(ground)
     }
@@ -127,7 +128,7 @@ class GameScene: SKScene, SKPhysicsContactDelegate {
     }
     
     func createDrop(position:CGPoint){
-        var tempDrop = SKShapeNode(circleOfRadius: 10)
+        let tempDrop = SKShapeNode(circleOfRadius: 10)
         tempDrop.position = position
         tempDrop.strokeColor = UIColor.black
         tempDrop.fillColor = UIColor.yellow
@@ -140,7 +141,9 @@ class GameScene: SKScene, SKPhysicsContactDelegate {
         tempDrop.physicsBody?.restitution = 1
         tempDrop.physicsBody?.linearDamping = 0
         
-        tempDrop.physicsBody!.contactTestBitMask = EnemyCategory
+        tempDrop.physicsBody?.categoryBitMask = DropCategory
+        
+        tempDrop.physicsBody?.collisionBitMask = GroundCategory
         
         addChild(tempDrop)
         //rainDrops.append(tempDrop)
@@ -162,7 +165,9 @@ class GameScene: SKScene, SKPhysicsContactDelegate {
             umbrellaPowerup.physicsBody?.affectedByGravity = true
             umbrellaPowerup.physicsBody?.restitution = 0.60
             umbrellaPowerup.physicsBody?.linearDamping = 0
-            umbrellaPowerup.physicsBody!.contactTestBitMask = PowerUpCategory
+            umbrellaPowerup.physicsBody?.categoryBitMask = PowerUpCategory
+            umbrellaPowerup.physicsBody?.collisionBitMask = GroundCategory
+            
             addChild(umbrellaPowerup)
         }
     }
@@ -174,8 +179,7 @@ class GameScene: SKScene, SKPhysicsContactDelegate {
         umbrella.name = "umbrella"
         umbrella.physicsBody = SKPhysicsBody(rectangleOf: umbrella.size)
         umbrella.physicsBody?.isDynamic = false
-        //umbrella.physicsBody?.contactTestBitMask = PowerUpCategory
-        //umbrella.physicsBody?.contactTestBitMask = CollisionCategory
+        umbrella.physicsBody?.categoryBitMask = GroundCategory
         addChild(umbrella)
     }
     
@@ -218,7 +222,8 @@ class GameScene: SKScene, SKPhysicsContactDelegate {
         let Xrange = SKRange(lowerLimit: frame.minX, upperLimit: frame.maxX)
         let lockToCenter = SKConstraint.positionX(Xrange, y: Yrange)
         runner.constraints = [ lockToCenter ]
-        //runner.physicsBody?.contactTestBitMask = ObjectiveCategory
+        runner.physicsBody?.categoryBitMask = RunnerCategory
+        runner.physicsBody?.collisionBitMask = DropCategory
         addChild(runner)
     }
     
