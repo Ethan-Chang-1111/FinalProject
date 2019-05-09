@@ -20,6 +20,7 @@ class GameScene: SKScene, SKPhysicsContactDelegate {
     var music = SKAudioNode()
     var runnerVelocity = 0
     var umbrellaPowerup = SKShapeNode(circleOfRadius: 15)
+    var sizePowerup = SKShapeNode(circleOfRadius: 15)
     var powerupTimer = 0
     var powerupActive = false
     var bounceCounter = 0
@@ -101,7 +102,7 @@ class GameScene: SKScene, SKPhysicsContactDelegate {
             print("EXTREME RUNNER MOTION CHANGE ACTIVATED")
         }
         
-        if counter % 5 == 0 {
+        if counter % 15 == 0 {
             createPowerup()
         }
         
@@ -123,6 +124,7 @@ class GameScene: SKScene, SKPhysicsContactDelegate {
         if bounceCounter >= 5 {
             bounceCounter = 0
             umbrellaPowerup.removeFromParent()
+            sizePowerup.removeFromParent()
         }
         
     }
@@ -151,7 +153,7 @@ class GameScene: SKScene, SKPhysicsContactDelegate {
     }
     
     func createPowerup() {
-        let powerupIdentity = 0
+        let powerupIdentity = Int.random(in: 0 ... 1)
         if powerupIdentity == 0 {
             let randomPosition = CGFloat(Int.random(in: 0 ... 750))
             umbrellaPowerup.position = CGPoint(x: frame.maxX-randomPosition, y: frame.maxY)
@@ -169,6 +171,22 @@ class GameScene: SKScene, SKPhysicsContactDelegate {
             umbrellaPowerup.physicsBody?.collisionBitMask = GroundCategory
             
             addChild(umbrellaPowerup)
+        }
+        if powerupIdentity == 1 {
+            let randomPosition = CGFloat(Int.random(in: 0 ... 750))
+            sizePowerup.position = CGPoint(x: frame.maxX-randomPosition, y: frame.maxY)
+            sizePowerup.strokeColor = UIColor.green
+            sizePowerup.fillColor = UIColor.yellow
+            sizePowerup.name = "sizePowerup"
+            sizePowerup.physicsBody = SKPhysicsBody(circleOfRadius: 15)
+            sizePowerup.physicsBody?.isDynamic = true
+            sizePowerup.physicsBody?.usesPreciseCollisionDetection = true
+            sizePowerup.physicsBody?.friction = 0
+            sizePowerup.physicsBody?.affectedByGravity = true
+            sizePowerup.physicsBody?.restitution = 0.60
+            sizePowerup.physicsBody?.linearDamping = 0
+            sizePowerup.physicsBody!.contactTestBitMask = PowerUpCategory
+            addChild(sizePowerup)
         }
     }
     
@@ -203,6 +221,9 @@ class GameScene: SKScene, SKPhysicsContactDelegate {
     func removeAllPowerupBuffs() {
         powerupActive = false
         umbrella.size = CGSize(width: 120, height: 10)
+        runner.size = CGSize(width: 50, height: 50)
+        runner.physicsBody = SKPhysicsBody(rectangleOf: CGSize(width: 50, height: 50))
+        runner.physicsBody?.allowsRotation = false
     }
     
     func createRunner() {
@@ -291,6 +312,29 @@ class GameScene: SKScene, SKPhysicsContactDelegate {
             bounceCounter += 1
             print(bounceCounter)
         }else if(contact.bodyA.node?.name == "ground" && contact.bodyB.node?.name == "umbrellaPowerup") {
+            bounceCounter += 1
+            print(bounceCounter)
+        }
+        
+        if (contact.bodyA.node?.name == "sizePowerup" && contact.bodyB.node?.name == "umbrella"){
+            contact.bodyA.node?.removeFromParent()
+            runner.size = CGSize(width: 35, height: 35)
+            runner.physicsBody = SKPhysicsBody(rectangleOf: CGSize(width: 35, height: 35))
+            runner.physicsBody?.allowsRotation = false
+            powerupActive = true
+            
+        }else if(contact.bodyA.node?.name == "umbrella" && contact.bodyB.node?.name == "sizePowerup") {
+            contact.bodyB.node?.removeFromParent()
+            runner.size = CGSize(width: 35, height: 35)
+            runner.physicsBody = SKPhysicsBody(rectangleOf: CGSize(width: 35, height: 35))
+            runner.physicsBody?.allowsRotation = false
+            powerupActive = true
+        }
+        
+        if (contact.bodyA.node?.name == "sizePowerup" && contact.bodyB.node?.name == "ground"){
+            bounceCounter += 1
+            print(bounceCounter)
+        }else if(contact.bodyA.node?.name == "ground" && contact.bodyB.node?.name == "sizePowerup") {
             bounceCounter += 1
             print(bounceCounter)
         }
