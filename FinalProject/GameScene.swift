@@ -19,7 +19,10 @@ class GameScene: SKScene, SKPhysicsContactDelegate {
     var background = SKSpriteNode(imageNamed: "defaultbackground")
     var music = SKAudioNode()
     var runnerVelocity = 0
-    //var umbrellaPowerup = SKShapeNode()
+    var umbrellaPowerup = SKShapeNode(circleOfRadius: 15)
+    var powerupTimer = 0
+    var powerupActive = false
+    var bounceCounter = 0
     
     var counter = 0
     var timer = Timer()
@@ -88,23 +91,39 @@ class GameScene: SKScene, SKPhysicsContactDelegate {
     
     @objc func updateTimer() {
         counter += 1
-        print(counter)
+        print("time elapsed: \(counter) seconds")
         if counter % 2 == 0 {
             changeRunnerMotion()
         }
         if counter % 15 == 0 {
             changeRunnerMotionExtreme()
-            print("EXTREME")
+            print("EXTREME RUNNER MOTION CHANGE ACTIVATED")
         }
         
-        //if counter == 3 {createPowerup()}
+        if counter % 5 == 0 {
+            createPowerup()
+        }
         
         let random = CGFloat(Double.random(in: -1..<1))
         if(counter % 2 == 0){
-            print(random)
             createDrop(position: CGPoint(x: frame.maxX * random, y: frame.maxY))
             
         }
+        
+        if powerupActive == true {
+            powerupTimer += 1
+        }
+        
+        if powerupTimer == 10 {
+            powerupTimer = 0
+            removeAllPowerupBuffs()
+        }
+        
+        if bounceCounter >= 5 {
+            bounceCounter = 0
+            umbrellaPowerup.removeFromParent()
+        }
+        
     }
     
     func createDrop(position:CGPoint){
@@ -127,27 +146,27 @@ class GameScene: SKScene, SKPhysicsContactDelegate {
         //rainDrops.append(tempDrop)
         tempDrop.physicsBody?.applyImpulse(CGVector(dx: 0, dy: 5))
     }
-    /*
+    
     func createPowerup() {
         let powerupIdentity = 0
         if powerupIdentity == 0 {
+            let randomPosition = CGFloat(Int.random(in: 0 ... 750))
+            umbrellaPowerup.position = CGPoint(x: frame.maxX-randomPosition, y: frame.maxY)
             umbrellaPowerup.strokeColor = UIColor.green
             umbrellaPowerup.fillColor = UIColor.white
             umbrellaPowerup.name = "umbrellaPowerup"
-            umbrellaPowerup.physicsBody = SKPhysicsBody(circleOfRadius: 7)
+            umbrellaPowerup.physicsBody = SKPhysicsBody(circleOfRadius: 15)
             umbrellaPowerup.physicsBody?.isDynamic = true
             umbrellaPowerup.physicsBody?.usesPreciseCollisionDetection = true
             umbrellaPowerup.physicsBody?.friction = 0
             umbrellaPowerup.physicsBody?.affectedByGravity = true
-            umbrellaPowerup.physicsBody?.restitution = 1
+            umbrellaPowerup.physicsBody?.restitution = 0.60
             umbrellaPowerup.physicsBody?.linearDamping = 0
             umbrellaPowerup.physicsBody!.contactTestBitMask = PowerUpCategory
-            //addChild(umbrellaPowerup)
-            
-            umbrella.size = CGSize(width: 200, height: 10)
+            addChild(umbrellaPowerup)
         }
-    }*/
-
+    }
+    
     
     func createUmbrella() {
         umbrella = SKSpriteNode(color: UIColor.white, size: CGSize(width: 120, height: 10))
@@ -175,6 +194,11 @@ class GameScene: SKScene, SKPhysicsContactDelegate {
         let velocity = Int.random(in: -50 ... 50)
         runner.physicsBody?.velocity = CGVector(dx: 0, dy: 0)
         runner.physicsBody?.applyImpulse(CGVector(dx: velocity, dy: 0))
+    }
+    
+    func removeAllPowerupBuffs() {
+        powerupActive = false
+        umbrella.size = CGSize(width: 120, height: 10)
     }
     
     func createRunner() {
@@ -221,7 +245,6 @@ class GameScene: SKScene, SKPhysicsContactDelegate {
     }
     
     func didBegin(_ contact: SKPhysicsContact) {
-        print()
         
         if (contact.bodyA.node?.name == "ground" && contact.bodyB.node?.name == "drop"){
             createDrop(position: CGPoint(x:(contact.bodyB.node?.position.x)!,y:frame.maxY))
@@ -231,7 +254,6 @@ class GameScene: SKScene, SKPhysicsContactDelegate {
             createDrop(position: CGPoint(x:(contact.bodyA.node?.position.x)!,y:frame.maxY))
             contact.bodyA.node?.removeFromParent()
         }
-        
         
         if (contact.bodyA.node?.name == "umbrella" && contact.bodyB.node?.name == "drop"){
             score += 1
@@ -247,12 +269,26 @@ class GameScene: SKScene, SKPhysicsContactDelegate {
         }else if(contact.bodyA.node?.name == "drop" && contact.bodyB.node?.name == "runner") {
             score -= 1
             contact.bodyA.node?.removeFromParent()
-            
         }
         
+        if (contact.bodyA.node?.name == "umbrellaPowerup" && contact.bodyB.node?.name == "umbrella"){
+            contact.bodyA.node?.removeFromParent()
+            umbrella.size = CGSize(width: 200, height: 10)
+            powerupActive = true
+            
+        }else if(contact.bodyA.node?.name == "umbrella" && contact.bodyB.node?.name == "umbrellaPowerup") {
+            contact.bodyB.node?.removeFromParent()
+            umbrella.size = CGSize(width: 200, height: 10)
+            powerupActive = true
+        }
         
-        
+        if (contact.bodyA.node?.name == "umbrellaPowerup" && contact.bodyB.node?.name == "ground"){
+            bounceCounter += 1
+            print(bounceCounter)
+        }else if(contact.bodyA.node?.name == "ground" && contact.bodyB.node?.name == "umbrellaPowerup") {
+            bounceCounter += 1
+            print(bounceCounter)
+        }
         
     }
-    
 }
