@@ -24,6 +24,7 @@ class GameScene: SKScene, SKPhysicsContactDelegate {
     var powerupTimer = 0
     var powerupActive = false
     var bounceCounter = 0
+    var restartLabel = SKLabelNode()
     
     var counter = 0
     var timer = Timer()
@@ -239,6 +240,10 @@ class GameScene: SKScene, SKPhysicsContactDelegate {
         runner.physicsBody?.allowsRotation = false
     }
     
+    func createRestartLabel() {
+        
+    }
+    
     func createRunner() {
         runner.texture = SKTexture(imageNamed: "marcos")
         runner.size = CGSize(width: 50, height: 50)
@@ -353,6 +358,16 @@ class GameScene: SKScene, SKPhysicsContactDelegate {
         }else if(contact.bodyA.node?.name == "ground" && contact.bodyB.node?.name == "sizePowerup") {
             bounceCounter += 1
             print(bounceCounter)
+        }
+        
+        if (contact.bodyA.node?.name == "drop" && contact.bodyB.node?.name == "runner"){
+            playingGame = false
+            removeAllChildren()
+            createRestartLabel()
+        }else if(contact.bodyA.node?.name == "runner" && contact.bodyB.node?.name == "drop") {
+            playingGame = false
+            removeAllChildren()
+            createRestartLabel()
         }
         
     }
