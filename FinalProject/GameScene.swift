@@ -12,7 +12,7 @@ import GameplayKit
 class GameScene: SKScene, SKPhysicsContactDelegate {
     var umbrella = SKSpriteNode()
     var runner = SKSpriteNode()
-    var rainDrop = SKShapeNode()
+    var rainDrop = SKSpriteNode()
     var ground = SKSpriteNode()
     var playingGame = true
     var score = 0
@@ -29,8 +29,7 @@ class GameScene: SKScene, SKPhysicsContactDelegate {
     var timer = Timer()
     
     
-    
-    var rainDrops = [SKShapeNode()]
+    var rainDrops = [SKSpriteNode()]
     var sceneController = SKView()
     
     let DropCategory   : UInt32 = 0x1 << 0
@@ -121,7 +120,7 @@ class GameScene: SKScene, SKPhysicsContactDelegate {
             removeAllPowerupBuffs()
         }
         
-        if bounceCounter >= 5 {
+        if bounceCounter >= 2 {
             bounceCounter = 0
             umbrellaPowerup.removeFromParent()
             sizePowerup.removeFromParent()
@@ -131,10 +130,10 @@ class GameScene: SKScene, SKPhysicsContactDelegate {
     
     
     func createDrop(position:CGPoint){
-        let tempDrop = SKShapeNode(circleOfRadius: 10)
+        var tempDrop = SKSpriteNode()
+        tempDrop.texture = SKTexture(imageNamed: "raindrop")
+        tempDrop.size = CGSize(width: 15, height: 15)
         tempDrop.position = position
-        tempDrop.strokeColor = UIColor.black
-        tempDrop.fillColor = UIColor.yellow
         tempDrop.name = "drop"
         tempDrop.physicsBody = SKPhysicsBody(circleOfRadius: 10)
         tempDrop.physicsBody?.isDynamic = true
@@ -143,6 +142,11 @@ class GameScene: SKScene, SKPhysicsContactDelegate {
         tempDrop.physicsBody?.affectedByGravity = false
         tempDrop.physicsBody?.restitution = 1
         tempDrop.physicsBody?.linearDamping = 0
+        tempDrop.physicsBody?.allowsRotation = false
+        let Yrange = SKRange(lowerLimit: frame.minY, upperLimit: frame.maxY+100)
+        let Xrange = SKRange(lowerLimit: tempDrop.position.x, upperLimit: tempDrop.position.x)
+        let lockToCenter = SKConstraint.positionX(Xrange, y: Yrange)
+        tempDrop.constraints = [ lockToCenter ]
         
         tempDrop.physicsBody?.categoryBitMask = DropCategory
         
@@ -199,6 +203,13 @@ class GameScene: SKScene, SKPhysicsContactDelegate {
         umbrella.name = "umbrella"
         umbrella.physicsBody = SKPhysicsBody(rectangleOf: umbrella.size)
         umbrella.physicsBody?.isDynamic = false
+        umbrella.physicsBody?.allowsRotation = false
+        let Yrange = SKRange(lowerLimit: frame.midY-60, upperLimit: frame.midY-60)
+        let Xrange = SKRange(lowerLimit: frame.minX, upperLimit: frame.maxX)
+        let lockToCenter = SKConstraint.positionX(Xrange, y: Yrange)
+        umbrella.constraints = [ lockToCenter ]
+        umbrella.physicsBody?.contactTestBitMask = PowerUpCategory
+        umbrella.physicsBody?.contactTestBitMask = CollisionCategory
         umbrella.physicsBody?.categoryBitMask = GroundCategory
         addChild(umbrella)
     }
@@ -221,8 +232,15 @@ class GameScene: SKScene, SKPhysicsContactDelegate {
     }
     
     func removeAllPowerupBuffs() {
+        print("removeAllPowerupBuffs")
         powerupActive = false
         umbrella.size = CGSize(width: 120, height: 10)
+        umbrella.physicsBody = SKPhysicsBody(rectangleOf: umbrella.size)
+        umbrella.physicsBody?.allowsRotation = false
+        let Yrange = SKRange(lowerLimit: frame.midY-60, upperLimit: frame.midY-60)
+        let Xrange = SKRange(lowerLimit: frame.minX, upperLimit: frame.maxX)
+        let lockToCenter = SKConstraint.positionX(Xrange, y: Yrange)
+        umbrella.constraints = [ lockToCenter ]
         runner.size = CGSize(width: 50, height: 50)
         runner.physicsBody = SKPhysicsBody(rectangleOf: CGSize(width: 50, height: 50))
         runner.physicsBody?.allowsRotation = false
@@ -305,11 +323,15 @@ class GameScene: SKScene, SKPhysicsContactDelegate {
         if (contact.bodyA.node?.name == "umbrellaPowerup" && contact.bodyB.node?.name == "umbrella"){
             contact.bodyA.node?.removeFromParent()
             umbrella.size = CGSize(width: 200, height: 10)
+            umbrella.physicsBody = SKPhysicsBody(rectangleOf: umbrella.size)
+            umbrella.physicsBody?.allowsRotation = false
             powerupActive = true
             
         }else if(contact.bodyA.node?.name == "umbrella" && contact.bodyB.node?.name == "umbrellaPowerup") {
             contact.bodyB.node?.removeFromParent()
             umbrella.size = CGSize(width: 200, height: 10)
+            umbrella.physicsBody = SKPhysicsBody(rectangleOf: umbrella.size)
+            umbrella.physicsBody?.allowsRotation = false
             powerupActive = true
         }
         
