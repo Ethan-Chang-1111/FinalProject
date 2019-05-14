@@ -33,10 +33,10 @@ class GameScene: SKScene, SKPhysicsContactDelegate {
     var rainDrops = [SKSpriteNode()]
     var sceneController = SKView()
     
-    let EnemyCategory   : UInt32 = 0x1 << 0
+    let DropCategory   : UInt32 = 0x1 << 0
     let PlayerCategory : UInt32 = 0x1 << 1
-    let CollisionCategory  : UInt32 = 0x1 << 2
-    let ObjectiveCategory : UInt32 = 0x1 << 3
+    let GroundCategory  : UInt32 = 0x1 << 2
+    let RunnerCategory : UInt32 = 0x1 << 3
     let PowerUpCategory : UInt32 = 0x1 << 4
     
     override func didMove(to view: SKView) {
@@ -82,7 +82,7 @@ class GameScene: SKScene, SKPhysicsContactDelegate {
         ground.physicsBody = SKPhysicsBody(rectangleOf: ground.size)
         ground.physicsBody?.isDynamic = false
         
-        ground.physicsBody!.contactTestBitMask = CollisionCategory
+        ground.physicsBody!.categoryBitMask = GroundCategory
         
         addChild(ground)
     }
@@ -102,7 +102,7 @@ class GameScene: SKScene, SKPhysicsContactDelegate {
             print("EXTREME RUNNER MOTION CHANGE ACTIVATED")
         }
         
-        if counter % 15 == 0 {
+        if (counter % 15 == 0) && (counter < 45 ){
             createPowerup()
         }
         
@@ -129,8 +129,9 @@ class GameScene: SKScene, SKPhysicsContactDelegate {
         
     }
     
+    
     func createDrop(position:CGPoint){
-        var tempDrop = SKSpriteNode()
+        let tempDrop = SKSpriteNode()
         tempDrop.texture = SKTexture(imageNamed: "raindrop")
         tempDrop.size = CGSize(width: 15, height: 15)
         tempDrop.position = position
@@ -148,7 +149,10 @@ class GameScene: SKScene, SKPhysicsContactDelegate {
         let lockToCenter = SKConstraint.positionX(Xrange, y: Yrange)
         tempDrop.constraints = [ lockToCenter ]
         
-        tempDrop.physicsBody!.contactTestBitMask = EnemyCategory
+        tempDrop.physicsBody?.categoryBitMask = DropCategory
+        
+        tempDrop.physicsBody?.collisionBitMask = GroundCategory
+        tempDrop.physicsBody?.contactTestBitMask = GroundCategory
         
         addChild(tempDrop)
         //rainDrops.append(tempDrop)
@@ -170,7 +174,10 @@ class GameScene: SKScene, SKPhysicsContactDelegate {
             umbrellaPowerup.physicsBody?.affectedByGravity = true
             umbrellaPowerup.physicsBody?.restitution = 0.60
             umbrellaPowerup.physicsBody?.linearDamping = 0
-            umbrellaPowerup.physicsBody!.contactTestBitMask = PowerUpCategory
+            umbrellaPowerup.physicsBody?.categoryBitMask = PowerUpCategory
+            umbrellaPowerup.physicsBody?.collisionBitMask = GroundCategory
+            umbrellaPowerup.physicsBody?.contactTestBitMask = GroundCategory
+            
             addChild(umbrellaPowerup)
         }
         if powerupIdentity == 1 {
@@ -186,7 +193,9 @@ class GameScene: SKScene, SKPhysicsContactDelegate {
             sizePowerup.physicsBody?.affectedByGravity = true
             sizePowerup.physicsBody?.restitution = 0.60
             sizePowerup.physicsBody?.linearDamping = 0
-            sizePowerup.physicsBody!.contactTestBitMask = PowerUpCategory
+            sizePowerup.physicsBody!.categoryBitMask = PowerUpCategory
+            sizePowerup.physicsBody!.collisionBitMask = GroundCategory
+            sizePowerup.physicsBody?.contactTestBitMask = GroundCategory
             addChild(sizePowerup)
         }
     }
@@ -203,8 +212,7 @@ class GameScene: SKScene, SKPhysicsContactDelegate {
         let Xrange = SKRange(lowerLimit: frame.minX, upperLimit: frame.maxX)
         let lockToCenter = SKConstraint.positionX(Xrange, y: Yrange)
         umbrella.constraints = [ lockToCenter ]
-        umbrella.physicsBody?.contactTestBitMask = PowerUpCategory
-        umbrella.physicsBody?.contactTestBitMask = CollisionCategory
+        umbrella.physicsBody?.categoryBitMask = GroundCategory
         addChild(umbrella)
     }
     
@@ -261,7 +269,9 @@ class GameScene: SKScene, SKPhysicsContactDelegate {
         let Xrange = SKRange(lowerLimit: frame.minX, upperLimit: frame.maxX)
         let lockToCenter = SKConstraint.positionX(Xrange, y: Yrange)
         runner.constraints = [ lockToCenter ]
-        runner.physicsBody?.contactTestBitMask = ObjectiveCategory
+        runner.physicsBody?.categoryBitMask = RunnerCategory
+        runner.physicsBody?.collisionBitMask = DropCategory
+        runner.physicsBody?.contactTestBitMask = DropCategory
         addChild(runner)
     }
     
@@ -289,6 +299,7 @@ class GameScene: SKScene, SKPhysicsContactDelegate {
     
     func didBegin(_ contact: SKPhysicsContact) {
         print("hello")
+        
         if (contact.bodyA.node?.name == "ground" && contact.bodyB.node?.name == "drop"){
             createDrop(position: CGPoint(x:(contact.bodyB.node?.position.x)!,y:frame.maxY))
             contact.bodyB.node?.removeFromParent()
@@ -314,6 +325,8 @@ class GameScene: SKScene, SKPhysicsContactDelegate {
             contact.bodyA.node?.removeFromParent()
         }
         
+        
+        
         if (contact.bodyA.node?.name == "umbrellaPowerup" && contact.bodyB.node?.name == "umbrella"){
             contact.bodyA.node?.removeFromParent()
             umbrella.size = CGSize(width: 200, height: 10)
@@ -336,6 +349,9 @@ class GameScene: SKScene, SKPhysicsContactDelegate {
             bounceCounter += 1
             print(bounceCounter)
         }
+        
+        
+        
         
         if (contact.bodyA.node?.name == "sizePowerup" && contact.bodyB.node?.name == "umbrella"){
             contact.bodyA.node?.removeFromParent()
