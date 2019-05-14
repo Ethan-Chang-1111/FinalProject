@@ -102,7 +102,7 @@ class GameScene: SKScene, SKPhysicsContactDelegate {
             print("EXTREME RUNNER MOTION CHANGE ACTIVATED")
         }
         
-        if counter % 15 == 0 {
+        if (counter % 15 == 0) && (counter < 45 ){
             createPowerup()
         }
         
@@ -185,7 +185,8 @@ class GameScene: SKScene, SKPhysicsContactDelegate {
             sizePowerup.physicsBody?.affectedByGravity = true
             sizePowerup.physicsBody?.restitution = 0.60
             sizePowerup.physicsBody?.linearDamping = 0
-            sizePowerup.physicsBody!.contactTestBitMask = PowerUpCategory
+            sizePowerup.physicsBody!.categoryBitMask = PowerUpCategory
+            sizePowerup.physicsBody!.collisionBitMask = GroundCategory
             addChild(sizePowerup)
         }
     }
@@ -271,6 +272,7 @@ class GameScene: SKScene, SKPhysicsContactDelegate {
     }
     
     func didBegin(_ contact: SKPhysicsContact) {
+        print("hello")
         
         if (contact.bodyA.node?.name == "ground" && contact.bodyB.node?.name == "drop"){
             createDrop(position: CGPoint(x:(contact.bodyB.node?.position.x)!,y:frame.maxY))
@@ -297,6 +299,8 @@ class GameScene: SKScene, SKPhysicsContactDelegate {
             contact.bodyA.node?.removeFromParent()
         }
         
+        
+        
         if (contact.bodyA.node?.name == "umbrellaPowerup" && contact.bodyB.node?.name == "umbrella"){
             contact.bodyA.node?.removeFromParent()
             umbrella.size = CGSize(width: 200, height: 10)
@@ -315,6 +319,9 @@ class GameScene: SKScene, SKPhysicsContactDelegate {
             bounceCounter += 1
             print(bounceCounter)
         }
+        
+        
+        
         
         if (contact.bodyA.node?.name == "sizePowerup" && contact.bodyB.node?.name == "umbrella"){
             contact.bodyA.node?.removeFromParent()
