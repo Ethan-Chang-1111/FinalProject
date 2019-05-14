@@ -130,7 +130,7 @@ class GameScene: SKScene, SKPhysicsContactDelegate {
     
     
     func createDrop(position:CGPoint){
-        var tempDrop = SKSpriteNode()
+        let tempDrop = SKSpriteNode()
         tempDrop.texture = SKTexture(imageNamed: "raindrop")
         tempDrop.size = CGSize(width: 15, height: 15)
         tempDrop.position = position
@@ -151,6 +151,7 @@ class GameScene: SKScene, SKPhysicsContactDelegate {
         tempDrop.physicsBody?.categoryBitMask = DropCategory
         
         tempDrop.physicsBody?.collisionBitMask = GroundCategory
+        tempDrop.physicsBody?.contactTestBitMask = GroundCategory
         
         addChild(tempDrop)
         //rainDrops.append(tempDrop)
@@ -174,6 +175,7 @@ class GameScene: SKScene, SKPhysicsContactDelegate {
             umbrellaPowerup.physicsBody?.linearDamping = 0
             umbrellaPowerup.physicsBody?.categoryBitMask = PowerUpCategory
             umbrellaPowerup.physicsBody?.collisionBitMask = GroundCategory
+            umbrellaPowerup.physicsBody?.contactTestBitMask = GroundCategory
             
             addChild(umbrellaPowerup)
         }
@@ -192,6 +194,7 @@ class GameScene: SKScene, SKPhysicsContactDelegate {
             sizePowerup.physicsBody?.linearDamping = 0
             sizePowerup.physicsBody!.categoryBitMask = PowerUpCategory
             sizePowerup.physicsBody!.collisionBitMask = GroundCategory
+            sizePowerup.physicsBody?.contactTestBitMask = GroundCategory
             addChild(sizePowerup)
         }
     }
@@ -208,8 +211,6 @@ class GameScene: SKScene, SKPhysicsContactDelegate {
         let Xrange = SKRange(lowerLimit: frame.minX, upperLimit: frame.maxX)
         let lockToCenter = SKConstraint.positionX(Xrange, y: Yrange)
         umbrella.constraints = [ lockToCenter ]
-        umbrella.physicsBody?.contactTestBitMask = PowerUpCategory
-        umbrella.physicsBody?.contactTestBitMask = CollisionCategory
         umbrella.physicsBody?.categoryBitMask = GroundCategory
         addChild(umbrella)
     }
@@ -265,6 +266,7 @@ class GameScene: SKScene, SKPhysicsContactDelegate {
         runner.constraints = [ lockToCenter ]
         runner.physicsBody?.categoryBitMask = RunnerCategory
         runner.physicsBody?.collisionBitMask = DropCategory
+        runner.physicsBody?.contactTestBitMask = DropCategory
         addChild(runner)
     }
     
