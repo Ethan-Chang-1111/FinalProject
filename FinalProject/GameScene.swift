@@ -16,7 +16,7 @@ class GameScene: SKScene, SKPhysicsContactDelegate {
     var ground = SKSpriteNode()
     var playingGame = true
     var score = 0
-    var background = SKSpriteNode(imageNamed: "defaultbackground")
+    var background = SKSpriteNode(imageNamed: "cloud2")
     var music = SKAudioNode()
     var runnerVelocity = 0
     var umbrellaPowerup = SKShapeNode(circleOfRadius: 15)
@@ -47,15 +47,7 @@ class GameScene: SKScene, SKPhysicsContactDelegate {
         rainDrop.physicsBody?.applyImpulse(CGVector(dx: 0, dy: 5))
         runner.physicsBody?.applyImpulse(CGVector(dx: 5, dy: 0))
     }
-    /*
-     func test(){
-     let scene = SKScene(fileNamed: "Title")
-     
-     // Now present the scene in a view.
-     sceneController.presentScene(scene)//is being called, but no work
-     print("aubfoubfsofabjfa")
-     
-     }*/
+
     
     func createStoryboardObjects() {
         createBackground()
@@ -69,11 +61,12 @@ class GameScene: SKScene, SKPhysicsContactDelegate {
     func createBackground() {
         background.position = CGPoint(x: 0, y: 0)
         background.zPosition = -1
-        //addChild(background)
+        addChild(background)
     }
     
     func createGround() {
-        ground = SKSpriteNode(color: UIColor.green, size: CGSize(width: frame.height, height: 50))
+        ground = SKSpriteNode(imageNamed: "grass")
+        ground.size = CGSize(width: frame.height, height: 50)
         ground.position = CGPoint(x: frame.midX, y: frame.midY-175)
         ground.name = "ground"
         
@@ -101,7 +94,7 @@ class GameScene: SKScene, SKPhysicsContactDelegate {
             print("EXTREME RUNNER MOTION CHANGE ACTIVATED")
         }
         
-        if (counter % 15 == 0) && (counter < 45 ){
+        if (counter % 15 == 0){
             createPowerup()
         }
         
