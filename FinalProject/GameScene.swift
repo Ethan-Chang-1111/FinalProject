@@ -14,17 +14,21 @@ class GameScene: SKScene, SKPhysicsContactDelegate {
     var runner = SKSpriteNode()
     var rainDrop = SKSpriteNode()
     var ground = SKSpriteNode()
+    
     var playingGame = true
     var score = 0
     var background = SKSpriteNode(imageNamed: "cloud2")
     var music = SKAudioNode()
     var runnerVelocity = 0
+    
     var umbrellaPowerup = SKShapeNode(circleOfRadius: 15)
     var sizePowerup = SKShapeNode(circleOfRadius: 15)
     var powerupTimer = 0
     var powerupActive = false
     var bounceCounter = 0
+    
     var restartLabel = SKLabelNode()
+    var scoreLabel = SKLabelNode()
     
     var counter = 0
     var timer = Timer()
@@ -40,16 +44,50 @@ class GameScene: SKScene, SKPhysicsContactDelegate {
     let RunnerCategory : UInt32 = 0x1 << 3
     let PowerUpCategory : UInt32 = 0x1 << 4
     
+    let defaults = UserDefaults.standard
+    var highScore = 0;
+    
     override func didMove(to view: SKView) {
         self.physicsBody = SKPhysicsBody(edgeLoopFrom: self.frame)
         physicsWorld.contactDelegate = self
+        
+        if let savedData = defaults.object(forKey: "highScore") as? Data {
+            if let decoded = try? JSONDecoder().decode(Int.self, from:savedData) {
+                //print(decoded)
+                highScore = decoded
+            }
+        }
         
         beginMusic()
         createStoryboardObjects()
         rainDrop.physicsBody?.applyImpulse(CGVector(dx: 0, dy: 5))
         runner.physicsBody?.applyImpulse(CGVector(dx: 5, dy: 0))
     }
-
+    
+    func saveData(){
+        print("Save Data called")
+        //create custom obj that extends Codable and use \/ here
+       
+        if let encoded = NSCoder().encode(highScore){
+            print("mark 1")
+            defaults.set(encoded,forKey: "highScore")
+        }else{
+            print("mark1.5")
+            
+        }
+        
+        
+        if let savedData = defaults.object(forKey: "highScore") as? Data {
+            print("mark 2")
+            if let decoded = try? JSONDecoder().decode(Int.self, from:savedData) {
+                print("mark 3 \(decoded)")
+                //highScore = decoded
+            }
+            
+        }
+        
+    }
+    
     
     func createStoryboardObjects() {
         createBackground()
@@ -58,6 +96,7 @@ class GameScene: SKScene, SKPhysicsContactDelegate {
         createUmbrella()
         createRunner()
         startTimer()
+        createScoreLabel()
         playingGame = true
     }
     
@@ -82,6 +121,22 @@ class GameScene: SKScene, SKPhysicsContactDelegate {
         addChild(ground)
     }
     
+    func createScoreLabel(){
+        
+        scoreLabel.position = CGPoint(x: frame.midX, y: frame.midY + 80)
+        scoreLabel.alpha = 1
+        scoreLabel.fontColor = SKColor.red
+        scoreLabel.text = "Score: \(counter) \nHigh Score: \(highScore)"
+        scoreLabel.fontSize = 40
+        scoreLabel.numberOfLines = 0
+        scoreLabel.name = "scoreLabel"
+        addChild(scoreLabel)
+    }
+    
+    func updateScore(){
+        scoreLabel.text = "Score: \(counter) \nHigh Score: \(highScore)"
+    }
+    
     func startTimer() {
         timer = Timer.scheduledTimer(timeInterval: 1, target: self, selector: #selector(updateTimer), userInfo: nil, repeats: true)
     }
@@ -89,13 +144,14 @@ class GameScene: SKScene, SKPhysicsContactDelegate {
     @objc func updateTimer() {
         if playingGame {
             counter += 1
+            updateScore()
             print("time elapsed: \(counter) seconds")
             if counter % 2 == 0 {
                 changeRunnerMotion()
             }
             if counter % 15 == 0 {
                 changeRunnerMotionExtreme()
-                print("EXTREME RUNNER MOTION CHANGE ACTIVATED")
+                //print("EXTREME RUNNER MOTION CHANGE ACTIVATED")
             }
             
             if (counter % 15 == 0){
@@ -233,7 +289,7 @@ class GameScene: SKScene, SKPhysicsContactDelegate {
     }
     
     func removeAllPowerupBuffs() {
-        print("removeAllPowerupBuffs")
+        //print("removeAllPowerupBuffs")
         powerupActive = false
         umbrella.size = CGSize(width: 120, height: 10)
         umbrella.physicsBody = SKPhysicsBody(rectangleOf: umbrella.size)
@@ -255,6 +311,9 @@ class GameScene: SKScene, SKPhysicsContactDelegate {
         restartLabel.fontSize = 40
         restartLabel.numberOfLines = 0
         restartLabel.name = "restartLabel"
+        
+        
+        
         addChild(restartLabel)
     }
     
@@ -284,7 +343,7 @@ class GameScene: SKScene, SKPhysicsContactDelegate {
     
     
     override func touchesBegan(_ touches: Set<UITouch>, with event: UIEvent?) {
-        print("touch")
+        //print("touch")
         //test()
         for touch in touches {
             if(playingGame){
@@ -309,7 +368,7 @@ class GameScene: SKScene, SKPhysicsContactDelegate {
     }
     
     func didBegin(_ contact: SKPhysicsContact) {
-        print("hello")
+        //print("hello")
         
         if (contact.bodyA.node?.name == "ground" && contact.bodyB.node?.name == "drop"){
             createDrop(position: CGPoint(x:(contact.bodyB.node?.position.x)!,y:frame.maxY))
@@ -321,27 +380,40 @@ class GameScene: SKScene, SKPhysicsContactDelegate {
         }
         
         if (contact.bodyA.node?.name == "umbrella" && contact.bodyB.node?.name == "drop"){
-            score += 1
             contact.bodyB.node?.removeFromParent()
         }else if(contact.bodyA.node?.name == "drop" && contact.bodyB.node?.name == "umbrella") {
-            score += 1
             contact.bodyA.node?.removeFromParent()
         }
         
         if (contact.bodyA.node?.name == "runner" && contact.bodyB.node?.name == "drop"){
             contact.bodyB.node?.removeFromParent()
             playingGame = false
-            print("papa")
-            removeAllChildren()
             timer.invalidate()
+            
+            if(counter > highScore){
+                highScore = counter
+            }
+            saveData()
+            removeAllChildren()
+            
+            
+            
             counter = 0
             createRestartLabel()
         }else if(contact.bodyA.node?.name == "drop" && contact.bodyB.node?.name == "runner") {
             contact.bodyA.node?.removeFromParent()
             playingGame = false
-            print("papa")
-            removeAllChildren()
+            
             timer.invalidate()
+            
+            if(counter > highScore){
+                highScore = counter
+            }
+            saveData()
+            
+            removeAllChildren()
+            
+            
             counter = 0
             createRestartLabel()
         }
