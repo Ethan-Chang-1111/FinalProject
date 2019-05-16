@@ -30,6 +30,7 @@ class GameScene: SKScene, SKPhysicsContactDelegate {
     var timer = Timer()
     
     
+    
     var rainDrops = [SKSpriteNode()]
     var sceneController = SKView()
     
@@ -58,7 +59,6 @@ class GameScene: SKScene, SKPhysicsContactDelegate {
         createRunner()
         startTimer()
         playingGame = true
-        startTimer()
     }
     
     func createBackground() {
@@ -329,7 +329,6 @@ class GameScene: SKScene, SKPhysicsContactDelegate {
         }
         
         if (contact.bodyA.node?.name == "runner" && contact.bodyB.node?.name == "drop"){
-            score -= 1
             contact.bodyB.node?.removeFromParent()
             playingGame = false
             print("papa")
@@ -338,7 +337,6 @@ class GameScene: SKScene, SKPhysicsContactDelegate {
             counter = 0
             createRestartLabel()
         }else if(contact.bodyA.node?.name == "drop" && contact.bodyB.node?.name == "runner") {
-            score -= 1
             contact.bodyA.node?.removeFromParent()
             playingGame = false
             print("papa")
