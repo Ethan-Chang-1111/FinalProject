@@ -11,8 +11,23 @@ import SpriteKit
 
 class TitleScreen: SKScene {
     
+    var startLabel = SKLabelNode()
+    var timeCounter = 0.0
+    var timer = Timer()
+    var alphaSign = true
+    
     override func didMove(to view: SKView) {
         createBackground()
+        createLabel()
+        timer = Timer.scheduledTimer(timeInterval: 0.1, target: self, selector: #selector(updateTimer), userInfo: nil, repeats: true)
+    }
+
+    func createLabel(){
+        startLabel.position = CGPoint(x: -2.7,y: 0)
+        startLabel = SKLabelNode(text: "Tap screen to start")
+        startLabel.fontSize = 47
+        startLabel.fontName = "HelveticaNeue-MediumItalic"
+        addChild(startLabel)
     }
     
     override func touchesBegan(_ touches: Set<UITouch>, with event: UIEvent?) {
@@ -35,7 +50,28 @@ class TitleScreen: SKScene {
             rainBackground.run(moveForever)
         }
     }
-
+    
+    @objc func updateTimer() {
+        timeCounter += 0.01
+        
+        if startLabel.alpha >= 1.0 {
+            alphaSign = false
+        }
+        if startLabel.alpha <= 0.0 {
+            alphaSign = true
+        }
+        
+        if alphaSign == true {
+            startLabel.alpha += 0.1
+        }
+        if alphaSign == false {
+            startLabel.alpha -= 0.1
+        }
+        
+        
+        
+    }
+    
 }
 
 
