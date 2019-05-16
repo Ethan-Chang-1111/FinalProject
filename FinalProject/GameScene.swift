@@ -24,6 +24,7 @@ class GameScene: SKScene, SKPhysicsContactDelegate {
     var powerupTimer = 0
     var powerupActive = false
     var bounceCounter = 0
+    var restartLabel = SKLabelNode()
     
     var counter = 0
     var timer = Timer()
@@ -56,6 +57,8 @@ class GameScene: SKScene, SKPhysicsContactDelegate {
         createUmbrella()
         createRunner()
         startTimer()
+        playingGame = true
+        startTimer()
     }
     
     func createBackground() {
@@ -84,111 +87,115 @@ class GameScene: SKScene, SKPhysicsContactDelegate {
     }
     
     @objc func updateTimer() {
-        counter += 1
-        print("time elapsed: \(counter) seconds")
-        if counter % 2 == 0 {
-            changeRunnerMotion()
-        }
-        if counter % 15 == 0 {
-            changeRunnerMotionExtreme()
-            print("EXTREME RUNNER MOTION CHANGE ACTIVATED")
-        }
-        
-        if (counter % 15 == 0){
-            createPowerup()
-        }
-        
-        let random = CGFloat(Double.random(in: -1..<1))
-        if(counter % 2 == 0){
-            createDrop(position: CGPoint(x: frame.maxX * random, y: frame.maxY))
+        if playingGame {
+            counter += 1
+            print("time elapsed: \(counter) seconds")
+            if counter % 2 == 0 {
+                changeRunnerMotion()
+            }
+            if counter % 15 == 0 {
+                changeRunnerMotionExtreme()
+                print("EXTREME RUNNER MOTION CHANGE ACTIVATED")
+            }
             
+            if (counter % 15 == 0){
+                createPowerup()
+            }
+            
+            let random = CGFloat(Double.random(in: -1..<1))
+            if(counter % 2 == 0){
+                createDrop(position: CGPoint(x: frame.maxX * random, y: frame.maxY))
+                
+            }
+            
+            if powerupActive == true {
+                powerupTimer += 1
+            }
+            
+            if powerupTimer == 10 {
+                powerupTimer = 0
+                removeAllPowerupBuffs()
+            }
+            
+            if bounceCounter >= 2 {
+                bounceCounter = 0
+                umbrellaPowerup.removeFromParent()
+                sizePowerup.removeFromParent()
+            }
         }
-        
-        if powerupActive == true {
-            powerupTimer += 1
-        }
-        
-        if powerupTimer == 10 {
-            powerupTimer = 0
-            removeAllPowerupBuffs()
-        }
-        
-        if bounceCounter >= 2 {
-            bounceCounter = 0
-            umbrellaPowerup.removeFromParent()
-            sizePowerup.removeFromParent()
-        }
-        
     }
     
     
     func createDrop(position:CGPoint){
-        let tempDrop = SKSpriteNode()
-        tempDrop.texture = SKTexture(imageNamed: "raindrop")
-        tempDrop.size = CGSize(width: 15, height: 15)
-        tempDrop.position = position
-        tempDrop.name = "drop"
-        tempDrop.physicsBody = SKPhysicsBody(circleOfRadius: 10)
-        tempDrop.physicsBody?.isDynamic = true
-        tempDrop.physicsBody?.usesPreciseCollisionDetection = true
-        tempDrop.physicsBody?.friction = 0
-        tempDrop.physicsBody?.affectedByGravity = false
-        tempDrop.physicsBody?.restitution = 1
-        tempDrop.physicsBody?.linearDamping = 0
-        tempDrop.physicsBody?.allowsRotation = false
-        let Yrange = SKRange(lowerLimit: frame.minY, upperLimit: frame.maxY+100)
-        let Xrange = SKRange(lowerLimit: tempDrop.position.x, upperLimit: tempDrop.position.x)
-        let lockToCenter = SKConstraint.positionX(Xrange, y: Yrange)
-        tempDrop.constraints = [ lockToCenter ]
-        
-        tempDrop.physicsBody?.categoryBitMask = DropCategory
-        
-        tempDrop.physicsBody?.collisionBitMask = GroundCategory
-        tempDrop.physicsBody?.contactTestBitMask = GroundCategory
-        
-        addChild(tempDrop)
-        //rainDrops.append(tempDrop)
-        tempDrop.physicsBody?.applyImpulse(CGVector(dx: 0, dy: 5))
+        if playingGame {
+            let tempDrop = SKSpriteNode()
+            tempDrop.texture = SKTexture(imageNamed: "raindrop")
+            tempDrop.size = CGSize(width: 15, height: 15)
+            tempDrop.position = position
+            tempDrop.name = "drop"
+            tempDrop.physicsBody = SKPhysicsBody(circleOfRadius: 10)
+            tempDrop.physicsBody?.isDynamic = true
+            tempDrop.physicsBody?.usesPreciseCollisionDetection = true
+            tempDrop.physicsBody?.friction = 0
+            tempDrop.physicsBody?.affectedByGravity = false
+            tempDrop.physicsBody?.restitution = 1
+            tempDrop.physicsBody?.linearDamping = 0
+            tempDrop.physicsBody?.allowsRotation = false
+            let Yrange = SKRange(lowerLimit: frame.minY, upperLimit: frame.maxY+100)
+            let Xrange = SKRange(lowerLimit: tempDrop.position.x, upperLimit: tempDrop.position.x)
+            let lockToCenter = SKConstraint.positionX(Xrange, y: Yrange)
+            tempDrop.constraints = [ lockToCenter ]
+            
+            tempDrop.physicsBody?.categoryBitMask = DropCategory
+            
+            tempDrop.physicsBody?.collisionBitMask = GroundCategory
+            tempDrop.physicsBody?.contactTestBitMask = GroundCategory
+            
+            addChild(tempDrop)
+            //rainDrops.append(tempDrop)
+            tempDrop.physicsBody?.applyImpulse(CGVector(dx: 0, dy: 5))
+        }
     }
     
     func createPowerup() {
-        let powerupIdentity = Int.random(in: 0 ... 1)
-        if powerupIdentity == 0 {
-            let randomPosition = CGFloat(Int.random(in: 0 ... 750))
-            umbrellaPowerup.position = CGPoint(x: frame.maxX-randomPosition, y: frame.maxY)
-            umbrellaPowerup.strokeColor = UIColor.green
-            umbrellaPowerup.fillColor = UIColor.white
-            umbrellaPowerup.name = "umbrellaPowerup"
-            umbrellaPowerup.physicsBody = SKPhysicsBody(circleOfRadius: 15)
-            umbrellaPowerup.physicsBody?.isDynamic = true
-            umbrellaPowerup.physicsBody?.usesPreciseCollisionDetection = true
-            umbrellaPowerup.physicsBody?.friction = 0
-            umbrellaPowerup.physicsBody?.affectedByGravity = true
-            umbrellaPowerup.physicsBody?.restitution = 0.60
-            umbrellaPowerup.physicsBody?.linearDamping = 0
-            umbrellaPowerup.physicsBody?.categoryBitMask = PowerUpCategory
-            umbrellaPowerup.physicsBody?.collisionBitMask = GroundCategory
-            umbrellaPowerup.physicsBody?.contactTestBitMask = GroundCategory
-            
-            addChild(umbrellaPowerup)
-        }
-        if powerupIdentity == 1 {
-            let randomPosition = CGFloat(Int.random(in: 0 ... 750))
-            sizePowerup.position = CGPoint(x: frame.maxX-randomPosition, y: frame.maxY)
-            sizePowerup.strokeColor = UIColor.green
-            sizePowerup.fillColor = UIColor.yellow
-            sizePowerup.name = "sizePowerup"
-            sizePowerup.physicsBody = SKPhysicsBody(circleOfRadius: 15)
-            sizePowerup.physicsBody?.isDynamic = true
-            sizePowerup.physicsBody?.usesPreciseCollisionDetection = true
-            sizePowerup.physicsBody?.friction = 0
-            sizePowerup.physicsBody?.affectedByGravity = true
-            sizePowerup.physicsBody?.restitution = 0.60
-            sizePowerup.physicsBody?.linearDamping = 0
-            sizePowerup.physicsBody!.categoryBitMask = PowerUpCategory
-            sizePowerup.physicsBody!.collisionBitMask = GroundCategory
-            sizePowerup.physicsBody?.contactTestBitMask = GroundCategory
-            addChild(sizePowerup)
+        if playingGame {
+            let powerupIdentity = Int.random(in: 0 ... 1)
+            if powerupIdentity == 0 {
+                let randomPosition = CGFloat(Int.random(in: 0 ... 750))
+                umbrellaPowerup.position = CGPoint(x: frame.maxX-randomPosition, y: frame.maxY)
+                umbrellaPowerup.strokeColor = UIColor.green
+                umbrellaPowerup.fillColor = UIColor.white
+                umbrellaPowerup.name = "umbrellaPowerup"
+                umbrellaPowerup.physicsBody = SKPhysicsBody(circleOfRadius: 15)
+                umbrellaPowerup.physicsBody?.isDynamic = true
+                umbrellaPowerup.physicsBody?.usesPreciseCollisionDetection = true
+                umbrellaPowerup.physicsBody?.friction = 0
+                umbrellaPowerup.physicsBody?.affectedByGravity = true
+                umbrellaPowerup.physicsBody?.restitution = 0.60
+                umbrellaPowerup.physicsBody?.linearDamping = 0
+                umbrellaPowerup.physicsBody?.categoryBitMask = PowerUpCategory
+                umbrellaPowerup.physicsBody?.collisionBitMask = GroundCategory
+                umbrellaPowerup.physicsBody?.contactTestBitMask = GroundCategory
+                addChild(umbrellaPowerup)
+            }
+            if powerupIdentity == 1 {
+                let randomPosition = CGFloat(Int.random(in: 0 ... 750))
+                sizePowerup.position = CGPoint(x: frame.maxX-randomPosition, y: frame.maxY)
+                sizePowerup.strokeColor = UIColor.green
+                sizePowerup.fillColor = UIColor.yellow
+                sizePowerup.name = "sizePowerup"
+                sizePowerup.physicsBody = SKPhysicsBody(circleOfRadius: 15)
+                sizePowerup.physicsBody?.isDynamic = true
+                sizePowerup.physicsBody?.usesPreciseCollisionDetection = true
+                sizePowerup.physicsBody?.friction = 0
+                sizePowerup.physicsBody?.affectedByGravity = true
+                sizePowerup.physicsBody?.restitution = 0.60
+                sizePowerup.physicsBody?.linearDamping = 0
+                sizePowerup.physicsBody!.categoryBitMask = PowerUpCategory
+                sizePowerup.physicsBody!.collisionBitMask = GroundCategory
+                sizePowerup.physicsBody?.contactTestBitMask = GroundCategory
+                addChild(sizePowerup)
+            }
         }
     }
     
@@ -240,6 +247,17 @@ class GameScene: SKScene, SKPhysicsContactDelegate {
         runner.physicsBody?.allowsRotation = false
     }
     
+    func createRestartLabel() {
+        restartLabel.position = CGPoint(x: frame.midX, y: frame.midY)
+        restartLabel.alpha = 0.70
+        restartLabel.fontColor = SKColor.red
+        restartLabel.text = "  Game Over!\nTap To Try Again"
+        restartLabel.fontSize = 40
+        restartLabel.numberOfLines = 0
+        restartLabel.name = "restartLabel"
+        addChild(restartLabel)
+    }
+    
     func createRunner() {
         runner.texture = SKTexture(imageNamed: "marcos")
         runner.size = CGSize(width: 50, height: 50)
@@ -272,6 +290,10 @@ class GameScene: SKScene, SKPhysicsContactDelegate {
             if(playingGame){
                 let location = touch.location(in: self)
                 umbrella.position.x = location.x
+            }
+            if !playingGame{
+                removeAllChildren()
+                createStoryboardObjects()
             }
         }
         //let titleScreen = TitleScreen(fileNamed: "TitleScreen")
@@ -309,9 +331,21 @@ class GameScene: SKScene, SKPhysicsContactDelegate {
         if (contact.bodyA.node?.name == "runner" && contact.bodyB.node?.name == "drop"){
             score -= 1
             contact.bodyB.node?.removeFromParent()
+            playingGame = false
+            print("papa")
+            removeAllChildren()
+            timer.invalidate()
+            counter = 0
+            createRestartLabel()
         }else if(contact.bodyA.node?.name == "drop" && contact.bodyB.node?.name == "runner") {
             score -= 1
             contact.bodyA.node?.removeFromParent()
+            playingGame = false
+            print("papa")
+            removeAllChildren()
+            timer.invalidate()
+            counter = 0
+            createRestartLabel()
         }
         
         
