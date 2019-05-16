@@ -66,7 +66,6 @@ class GameScene: SKScene, SKPhysicsContactDelegate {
         createRunner()
         startTimer()
         playingGame = true
-        startTimer()
     }
     
     func createBackground() {
@@ -131,7 +130,6 @@ class GameScene: SKScene, SKPhysicsContactDelegate {
             }
         }
     }
-    
     
     func createDrop(position:CGPoint){
         if playingGame {
@@ -228,13 +226,13 @@ class GameScene: SKScene, SKPhysicsContactDelegate {
     }
     
     func changeRunnerMotion() {
-        let velocity = Int.random(in: -20 ... 20)
+        let velocity = Int.random(in: -35 ... 35)
         runner.physicsBody?.velocity = CGVector(dx: 0, dy: 0)
         runner.physicsBody?.applyImpulse(CGVector(dx: velocity, dy: 0))
     }
     
     func changeRunnerMotionExtreme() {
-        let velocity = Int.random(in: -50 ... 50)
+        let velocity = Int.random(in: -60 ... 60)
         runner.physicsBody?.velocity = CGVector(dx: 0, dy: 0)
         runner.physicsBody?.applyImpulse(CGVector(dx: velocity, dy: 0))
     }
