@@ -217,6 +217,7 @@ class GameScene: SKScene, SKPhysicsContactDelegate{
                 umbrellaPowerup.physicsBody?.contactTestBitMask = GroundCategory
                 addChild(umbrellaPowerup)
             }
+            
             if powerupIdentity == 1 {
                 let randomPosition = CGFloat(Int.random(in: 0 ... 750))
                 sizePowerup.position = CGPoint(x: frame.maxX-randomPosition, y: frame.maxY)
