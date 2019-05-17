@@ -48,7 +48,7 @@ class GameScene: SKScene, SKPhysicsContactDelegate {
         runner.physicsBody?.applyImpulse(CGVector(dx: 5, dy: 0))
     }
 
-    
+
     
     func createStoryboardObjects() {
         createBackground()
