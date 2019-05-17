@@ -23,7 +23,7 @@ class TitleScreen: SKScene {
     }
 
     func createLabel(){
-        startLabel.position = CGPoint(x: -2.7,y: 0)
+        startLabel.position = CGPoint(x: -2.7,y: 0.0)
         startLabel = SKLabelNode(text: "Tap screen to start")
         startLabel.fontSize = 47
         startLabel.fontName = "HelveticaNeue-MediumItalic"
