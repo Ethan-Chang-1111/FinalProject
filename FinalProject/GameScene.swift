@@ -9,7 +9,7 @@
 import SpriteKit
 import GameplayKit
 
-class GameScene: SKScene, SKPhysicsContactDelegate {
+class GameScene: SKScene, SKPhysicsContactDelegate{
     var umbrella = SKSpriteNode()
     var runner = SKSpriteNode()
     var rainDrop = SKSpriteNode()
@@ -45,14 +45,14 @@ class GameScene: SKScene, SKPhysicsContactDelegate {
     let PowerUpCategory : UInt32 = 0x1 << 4
     
     let defaults = UserDefaults.standard
-    var highScore = 0;
+    var highScore = Integer(imput: 0);
     
     override func didMove(to view: SKView) {
         self.physicsBody = SKPhysicsBody(edgeLoopFrom: self.frame)
         physicsWorld.contactDelegate = self
         
         if let savedData = defaults.object(forKey: "highScore") as? Data {
-            if let decoded = try? JSONDecoder().decode(Int.self, from:savedData) {
+            if let decoded = try? JSONDecoder().decode(Integer.self, from:savedData) {
                 //print(decoded)
                 highScore = decoded
             }
@@ -64,28 +64,11 @@ class GameScene: SKScene, SKPhysicsContactDelegate {
         runner.physicsBody?.applyImpulse(CGVector(dx: 5, dy: 0))
     }
     
+    
     func saveData(){
-        print("Save Data called")
-        //create custom obj that extends Codable and use \/ here
-       
-        if let encoded = NSCoder().encode(highScore){
-            print("mark 1")
+        if let encoded = try? JSONEncoder().encode(highScore){
             defaults.set(encoded,forKey: "highScore")
-        }else{
-            print("mark1.5")
-            
         }
-        
-        
-        if let savedData = defaults.object(forKey: "highScore") as? Data {
-            print("mark 2")
-            if let decoded = try? JSONDecoder().decode(Int.self, from:savedData) {
-                print("mark 3 \(decoded)")
-                //highScore = decoded
-            }
-            
-        }
-        
     }
     
     
@@ -126,7 +109,7 @@ class GameScene: SKScene, SKPhysicsContactDelegate {
         scoreLabel.position = CGPoint(x: frame.midX, y: frame.midY + 80)
         scoreLabel.alpha = 1
         scoreLabel.fontColor = SKColor.red
-        scoreLabel.text = "Score: \(counter) \nHigh Score: \(highScore)"
+        scoreLabel.text = "Score: \(counter) \nHigh Score: \(highScore.getInt())"
         scoreLabel.fontSize = 40
         scoreLabel.numberOfLines = 0
         scoreLabel.name = "scoreLabel"
@@ -134,7 +117,7 @@ class GameScene: SKScene, SKPhysicsContactDelegate {
     }
     
     func updateScore(){
-        scoreLabel.text = "Score: \(counter) \nHigh Score: \(highScore)"
+        scoreLabel.text = "Score: \(counter) \nHigh Score: \(highScore.getInt())"
     }
     
     func startTimer() {
@@ -390,8 +373,8 @@ class GameScene: SKScene, SKPhysicsContactDelegate {
             playingGame = false
             timer.invalidate()
             
-            if(counter > highScore){
-                highScore = counter
+            if(counter > highScore.getInt()){
+                highScore.setInt(imput:counter)
             }
             saveData()
             removeAllChildren()
@@ -406,8 +389,8 @@ class GameScene: SKScene, SKPhysicsContactDelegate {
             
             timer.invalidate()
             
-            if(counter > highScore){
-                highScore = counter
+            if(counter > highScore.getInt()){
+                highScore.setInt(imput:counter)
             }
             saveData()
             
