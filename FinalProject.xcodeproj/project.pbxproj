@@ -15,6 +15,7 @@
 		425CFE492264E4AD00C4091A /* Main.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = 425CFE472264E4AD00C4091A /* Main.storyboard */; };
 		425CFE4B2264E4B200C4091A /* Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = 425CFE4A2264E4B200C4091A /* Assets.xcassets */; };
 		425CFE4E2264E4B200C4091A /* LaunchScreen.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = 425CFE4C2264E4B200C4091A /* LaunchScreen.storyboard */; };
+		429EC695228F16120087134C /* Integer.swift in Sources */ = {isa = PBXBuildFile; fileRef = 429EC694228F16120087134C /* Integer.swift */; };
 		42C46885226F7124002D9217 /* TitleScreen.sks in Resources */ = {isa = PBXBuildFile; fileRef = 42C46884226F7124002D9217 /* TitleScreen.sks */; };
 		8535C2AA2273690700590002 /* TitleScreen.swift in Sources */ = {isa = PBXBuildFile; fileRef = 8535C2A92273690700590002 /* TitleScreen.swift */; };
 		85BB8E1E22775DC60055C700 /* rick.mp3 in Resources */ = {isa = PBXBuildFile; fileRef = 85BB8E1D22775DC40055C700 /* rick.mp3 */; };
@@ -31,6 +32,7 @@
 		425CFE4A2264E4B200C4091A /* Assets.xcassets */ = {isa = PBXFileReference; lastKnownFileType = folder.assetcatalog; path = Assets.xcassets; sourceTree = "<group>"; };
 		425CFE4D2264E4B200C4091A /* Base */ = {isa = PBXFileReference; lastKnownFileType = file.storyboard; name = Base; path = Base.lproj/LaunchScreen.storyboard; sourceTree = "<group>"; };
 		425CFE4F2264E4B200C4091A /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
+		429EC694228F16120087134C /* Integer.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Integer.swift; sourceTree = "<group>"; };
 		42C46884226F7124002D9217 /* TitleScreen.sks */ = {isa = PBXFileReference; lastKnownFileType = file.sks; path = TitleScreen.sks; sourceTree = "<group>"; };
 		8535C2A92273690700590002 /* TitleScreen.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TitleScreen.swift; sourceTree = "<group>"; };
 		85BB8E1D22775DC40055C700 /* rick.mp3 */ = {isa = PBXFileReference; lastKnownFileType = audio.mp3; name = rick.mp3; path = Assets.xcassets/rick.dataset/rick.mp3; sourceTree = "<group>"; };
@@ -70,6 +72,7 @@
 				8535C2A92273690700590002 /* TitleScreen.swift */,
 				42C46884226F7124002D9217 /* TitleScreen.sks */,
 				425CFE432264E4AD00C4091A /* GameScene.swift */,
+				429EC694228F16120087134C /* Integer.swift */,
 				425CFE3F2264E4AD00C4091A /* GameScene.sks */,
 				425CFE412264E4AD00C4091A /* Actions.sks */,
 				425CFE452264E4AD00C4091A /* GameViewController.swift */,
@@ -158,6 +161,7 @@
 			buildActionMask = 2147483647;
 			files = (
 				425CFE442264E4AD00C4091A /* GameScene.swift in Sources */,
+				429EC695228F16120087134C /* Integer.swift in Sources */,
 				425CFE462264E4AD00C4091A /* GameViewController.swift in Sources */,
 				8535C2AA2273690700590002 /* TitleScreen.swift in Sources */,
 				425CFE3E2264E4AD00C4091A /* AppDelegate.swift in Sources */,
