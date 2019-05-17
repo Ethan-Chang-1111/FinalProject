@@ -17,12 +17,11 @@ class GameScene: SKScene, SKPhysicsContactDelegate{
     
     var playingGame = true
     var score = 0
-    var background = SKSpriteNode(imageNamed: "cloud2")
+    var background = SKSpriteNode(imageNamed: "cloudBacky")
     var music = SKAudioNode()
     var runnerVelocity = 0
-    
-    var umbrellaPowerup = SKShapeNode(circleOfRadius: 15)
-    var sizePowerup = SKShapeNode(circleOfRadius: 15)
+    var umbrellaPowerup = SKSpriteNode(imageNamed: "umbrellaPowerupIcon")
+    var sizePowerup = SKSpriteNode(imageNamed: "sizePowerupIcon")
     var powerupTimer = 0
     var powerupActive = false
     var bounceCounter = 0
@@ -32,8 +31,6 @@ class GameScene: SKScene, SKPhysicsContactDelegate{
     
     var counter = 0
     var timer = Timer()
-    
-    
     
     var rainDrops = [SKSpriteNode()]
     var sceneController = SKView()
@@ -84,6 +81,7 @@ class GameScene: SKScene, SKPhysicsContactDelegate{
     }
     
     func createBackground() {
+        background.size = CGSize(width: frame.height, height: frame.width)
         background.position = CGPoint(x: 0, y: 0)
         background.zPosition = -1
         addChild(background)
@@ -164,7 +162,6 @@ class GameScene: SKScene, SKPhysicsContactDelegate{
         }
     }
     
-    
     func createDrop(position:CGPoint){
         if playingGame {
             let tempDrop = SKSpriteNode()
@@ -202,10 +199,9 @@ class GameScene: SKScene, SKPhysicsContactDelegate{
             if powerupIdentity == 0 {
                 let randomPosition = CGFloat(Int.random(in: 0 ... 750))
                 umbrellaPowerup.position = CGPoint(x: frame.maxX-randomPosition, y: frame.maxY)
-                umbrellaPowerup.strokeColor = UIColor.green
-                umbrellaPowerup.fillColor = UIColor.white
+                umbrellaPowerup.size = CGSize(width: 25, height: 25)
                 umbrellaPowerup.name = "umbrellaPowerup"
-                umbrellaPowerup.physicsBody = SKPhysicsBody(circleOfRadius: 15)
+                umbrellaPowerup.physicsBody = SKPhysicsBody(circleOfRadius: 25)
                 umbrellaPowerup.physicsBody?.isDynamic = true
                 umbrellaPowerup.physicsBody?.usesPreciseCollisionDetection = true
                 umbrellaPowerup.physicsBody?.friction = 0
@@ -221,10 +217,9 @@ class GameScene: SKScene, SKPhysicsContactDelegate{
             if powerupIdentity == 1 {
                 let randomPosition = CGFloat(Int.random(in: 0 ... 750))
                 sizePowerup.position = CGPoint(x: frame.maxX-randomPosition, y: frame.maxY)
-                sizePowerup.strokeColor = UIColor.green
-                sizePowerup.fillColor = UIColor.yellow
+                sizePowerup.size = CGSize(width: 25, height: 25)
                 sizePowerup.name = "sizePowerup"
-                sizePowerup.physicsBody = SKPhysicsBody(circleOfRadius: 15)
+                sizePowerup.physicsBody = SKPhysicsBody(circleOfRadius: 25)
                 sizePowerup.physicsBody?.isDynamic = true
                 sizePowerup.physicsBody?.usesPreciseCollisionDetection = true
                 sizePowerup.physicsBody?.friction = 0
@@ -241,9 +236,10 @@ class GameScene: SKScene, SKPhysicsContactDelegate{
     
     
     func createUmbrella() {
-        umbrella = SKSpriteNode(color: UIColor.white, size: CGSize(width: 120, height: 10))
+        umbrella.size = CGSize(width: 120, height: 25)
         umbrella.position = CGPoint(x: frame.midX, y: frame.midY-60)
         umbrella.name = "umbrella"
+        umbrella.texture = SKTexture(imageNamed: "umbrellaTexture")
         umbrella.physicsBody = SKPhysicsBody(rectangleOf: umbrella.size)
         umbrella.physicsBody?.isDynamic = false
         umbrella.physicsBody?.allowsRotation = false
@@ -261,13 +257,13 @@ class GameScene: SKScene, SKPhysicsContactDelegate{
     }
     
     func changeRunnerMotion() {
-        let velocity = Int.random(in: -20 ... 20)
+        let velocity = Int.random(in: -35 ... 35)
         runner.physicsBody?.velocity = CGVector(dx: 0, dy: 0)
         runner.physicsBody?.applyImpulse(CGVector(dx: velocity, dy: 0))
     }
     
     func changeRunnerMotionExtreme() {
-        let velocity = Int.random(in: -50 ... 50)
+        let velocity = Int.random(in: -60 ... 60)
         runner.physicsBody?.velocity = CGVector(dx: 0, dy: 0)
         runner.physicsBody?.applyImpulse(CGVector(dx: velocity, dy: 0))
     }
@@ -275,7 +271,8 @@ class GameScene: SKScene, SKPhysicsContactDelegate{
     func removeAllPowerupBuffs() {
         //print("removeAllPowerupBuffs")
         powerupActive = false
-        umbrella.size = CGSize(width: 120, height: 10)
+        umbrella.size = CGSize(width: 120, height: 25)
+        umbrella.texture = SKTexture(imageNamed: "umbrellaTexture")
         umbrella.physicsBody = SKPhysicsBody(rectangleOf: umbrella.size)
         umbrella.physicsBody?.allowsRotation = false
         let Yrange = SKRange(lowerLimit: frame.midY-60, upperLimit: frame.midY-60)
@@ -406,14 +403,16 @@ class GameScene: SKScene, SKPhysicsContactDelegate{
         
         if (contact.bodyA.node?.name == "umbrellaPowerup" && contact.bodyB.node?.name == "umbrella"){
             contact.bodyA.node?.removeFromParent()
-            umbrella.size = CGSize(width: 200, height: 10)
+            umbrella.size = CGSize(width: 200, height: 25)
+            umbrella.texture = SKTexture(imageNamed: "longUmbrellaTexture")
             umbrella.physicsBody = SKPhysicsBody(rectangleOf: umbrella.size)
             umbrella.physicsBody?.allowsRotation = false
             powerupActive = true
             
         }else if(contact.bodyA.node?.name == "umbrella" && contact.bodyB.node?.name == "umbrellaPowerup") {
             contact.bodyB.node?.removeFromParent()
-            umbrella.size = CGSize(width: 200, height: 10)
+            umbrella.size = CGSize(width: 200, height: 25)
+            umbrella.texture = SKTexture(imageNamed: "longUmbrellaTexture")
             umbrella.physicsBody = SKPhysicsBody(rectangleOf: umbrella.size)
             umbrella.physicsBody?.allowsRotation = false
             powerupActive = true
