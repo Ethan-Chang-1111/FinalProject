@@ -114,6 +114,7 @@ class GameScene: SKScene, SKPhysicsContactDelegate{
         addChild(scoreLabel)
     }
     
+    
     func updateScore(){
         scoreLabel.text = "Score: \(counter) \nHigh Score: \(highScore.getInt())"
     }
