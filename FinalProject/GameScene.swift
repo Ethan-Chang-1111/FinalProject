@@ -55,7 +55,7 @@ class GameScene: SKScene, SKPhysicsContactDelegate{
             }
         }
         
-        beginMusic()
+        //beginMusic()
         createStoryboardObjects()
         rainDrop.physicsBody?.applyImpulse(CGVector(dx: 0, dy: 5))
         runner.physicsBody?.applyImpulse(CGVector(dx: 5, dy: 0))
@@ -82,15 +82,15 @@ class GameScene: SKScene, SKPhysicsContactDelegate{
     
     func createBackground() {
         background.size = CGSize(width: frame.height, height: frame.width)
-        background.position = CGPoint(x: 0, y: 0)
+        background.position = CGPoint(x: 0, y: frame.midY-100)
         background.zPosition = -1
         addChild(background)
     }
     
     func createGround() {
         ground = SKSpriteNode(imageNamed: "grass")
-        ground.size = CGSize(width: frame.height, height: 50)
-        ground.position = CGPoint(x: frame.midX, y: frame.midY-175)
+        ground.size = CGSize(width: frame.height, height: 150)
+        ground.position = CGPoint(x: frame.midX, y: frame.midY-210)
         ground.name = "ground"
         
         
@@ -279,7 +279,7 @@ class GameScene: SKScene, SKPhysicsContactDelegate{
         let Xrange = SKRange(lowerLimit: frame.minX, upperLimit: frame.maxX)
         let lockToCenter = SKConstraint.positionX(Xrange, y: Yrange)
         umbrella.constraints = [ lockToCenter ]
-        runner.size = CGSize(width: 50, height: 50)
+        runner.size = CGSize(width: 25, height: 50)
         runner.physicsBody = SKPhysicsBody(rectangleOf: CGSize(width: 50, height: 50))
         runner.physicsBody?.allowsRotation = false
     }
@@ -299,8 +299,8 @@ class GameScene: SKScene, SKPhysicsContactDelegate{
     }
     
     func createRunner() {
-        runner.texture = SKTexture(imageNamed: "marcos")
-        runner.size = CGSize(width: 50, height: 50)
+        runner.texture = SKTexture(imageNamed: "playerImage")
+        runner.size = CGSize(width: 25, height: 50)
         runner.name = "runner"
         runner.physicsBody = SKPhysicsBody(rectangleOf: CGSize(width: 50, height: 50))
         runner.position = CGPoint(x: frame.midX, y: frame.midY-110)
@@ -431,14 +431,14 @@ class GameScene: SKScene, SKPhysicsContactDelegate{
         
         if (contact.bodyA.node?.name == "sizePowerup" && contact.bodyB.node?.name == "umbrella"){
             contact.bodyA.node?.removeFromParent()
-            runner.size = CGSize(width: 35, height: 35)
+            runner.size = CGSize(width: 15, height: 35)
             runner.physicsBody = SKPhysicsBody(rectangleOf: CGSize(width: 35, height: 35))
             runner.physicsBody?.allowsRotation = false
             powerupActive = true
             
         }else if(contact.bodyA.node?.name == "umbrella" && contact.bodyB.node?.name == "sizePowerup") {
             contact.bodyB.node?.removeFromParent()
-            runner.size = CGSize(width: 35, height: 35)
+            runner.size = CGSize(width: 15, height: 35)
             runner.physicsBody = SKPhysicsBody(rectangleOf: CGSize(width: 35, height: 35))
             runner.physicsBody?.allowsRotation = false
             powerupActive = true
