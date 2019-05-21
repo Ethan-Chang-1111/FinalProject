@@ -150,6 +150,7 @@ class GameScene: SKScene, SKPhysicsContactDelegate{
                     random = CGFloat(Double.random(in: -1..<1))
                 }
             }
+            // big dad
             
             if powerupActive == true {
                 powerupTimer += 1
