@@ -93,7 +93,6 @@ class GameScene: SKScene, SKPhysicsContactDelegate{
         ground.position = CGPoint(x: frame.midX, y: frame.midY-210)
         ground.name = "ground"
         
-        
         ground.physicsBody = SKPhysicsBody(rectangleOf: ground.size)
         ground.physicsBody?.isDynamic = false
         
@@ -320,8 +319,6 @@ class GameScene: SKScene, SKPhysicsContactDelegate{
         runner.physicsBody?.contactTestBitMask = DropCategory
         addChild(runner)
     }
-    
-    
     
     override func touchesBegan(_ touches: Set<UITouch>, with event: UIEvent?) {
         //print("touch")
