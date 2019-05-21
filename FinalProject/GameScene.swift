@@ -55,7 +55,7 @@ class GameScene: SKScene, SKPhysicsContactDelegate{
             }
         }
         
-        //beginMusic()
+        beginMusic()
         createStoryboardObjects()
         rainDrop.physicsBody?.applyImpulse(CGVector(dx: 0, dy: 5))
         runner.physicsBody?.applyImpulse(CGVector(dx: 5, dy: 0))
@@ -113,6 +113,8 @@ class GameScene: SKScene, SKPhysicsContactDelegate{
         addChild(scoreLabel)
     }
     
+    
+    
     func updateScore(){
         scoreLabel.text = "Score: \(counter) \nHigh Score: \(highScore.getInt())"
     }
@@ -138,10 +140,13 @@ class GameScene: SKScene, SKPhysicsContactDelegate{
                 createPowerup()
             }
             
-            let random = CGFloat(Double.random(in: -1..<1))
+            var random = CGFloat(Double.random(in: -1..<1))
             if(counter % 2 == 0){
-                createDrop(position: CGPoint(x: frame.maxX * random, y: frame.maxY))
-                
+                let temp = Int(counter / 20) + 1
+                for x in 0...temp{
+                    createDrop(position: CGPoint(x: frame.maxX * random, y: frame.maxY))
+                    random = CGFloat(Double.random(in: -1..<1))
+                }
             }
             
             if powerupActive == true {
@@ -363,6 +368,8 @@ class GameScene: SKScene, SKPhysicsContactDelegate{
             contact.bodyA.node?.removeFromParent()
         }
         
+        
+        
         if (contact.bodyA.node?.name == "runner" && contact.bodyB.node?.name == "drop"){
             contact.bodyB.node?.removeFromParent()
             playingGame = false
@@ -395,6 +402,7 @@ class GameScene: SKScene, SKPhysicsContactDelegate{
             counter = 0
             createRestartLabel()
         }
+        
         
         
         
