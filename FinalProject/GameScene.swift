@@ -25,6 +25,7 @@ class GameScene: SKScene, SKPhysicsContactDelegate{
     var powerupTimer = 0
     var powerupActive = false
     var bounceCounter = 0
+    var marcosCounter = 0
     
     var restartLabel = SKLabelNode()
     var scoreLabel = SKLabelNode()
@@ -55,7 +56,7 @@ class GameScene: SKScene, SKPhysicsContactDelegate{
             }
         }
         
-        beginMusic()
+        
         createStoryboardObjects()
         rainDrop.physicsBody?.applyImpulse(CGVector(dx: 0, dy: 5))
         runner.physicsBody?.applyImpulse(CGVector(dx: 5, dy: 0))
@@ -71,6 +72,7 @@ class GameScene: SKScene, SKPhysicsContactDelegate{
     
     func createStoryboardObjects() {
         createBackground()
+        beginMusic()
         createGround()
         createDrop(position:  CGPoint(x:frame.midX,y:frame.maxY))
         createUmbrella()
@@ -142,7 +144,7 @@ class GameScene: SKScene, SKPhysicsContactDelegate{
             
             var random = CGFloat(Double.random(in: -1..<1))
             if(counter % 2 == 0){
-                let temp = Int(counter / 20) + 1
+                let temp = Int(counter / 10) + 1
                 for x in 0...temp{
                     createDrop(position: CGPoint(x: frame.maxX * random, y: frame.maxY))
                     random = CGFloat(Double.random(in: -1..<1))
@@ -241,13 +243,13 @@ class GameScene: SKScene, SKPhysicsContactDelegate{
     
     func createUmbrella() {
         umbrella.size = CGSize(width: 120, height: 25)
-        umbrella.position = CGPoint(x: frame.midX, y: frame.midY-60)
+        umbrella.position = CGPoint(x: frame.midX, y: frame.midY-40)
         umbrella.name = "umbrella"
         umbrella.texture = SKTexture(imageNamed: "umbrellaTexture")
         umbrella.physicsBody = SKPhysicsBody(rectangleOf: umbrella.size)
         umbrella.physicsBody?.isDynamic = false
         umbrella.physicsBody?.allowsRotation = false
-        let Yrange = SKRange(lowerLimit: frame.midY-60, upperLimit: frame.midY-60)
+        let Yrange = SKRange(lowerLimit: frame.midY-40, upperLimit: frame.midY-40)
         let Xrange = SKRange(lowerLimit: frame.minX, upperLimit: frame.maxX)
         let lockToCenter = SKConstraint.positionX(Xrange, y: Yrange)
         umbrella.constraints = [ lockToCenter ]
@@ -261,201 +263,215 @@ class GameScene: SKScene, SKPhysicsContactDelegate{
     }
     
     func changeRunnerMotion() {
-        let velocity = Int.random(in: -35 ... 35)
-        runner.physicsBody?.velocity = CGVector(dx: 0, dy: 0)
-        runner.physicsBody?.applyImpulse(CGVector(dx: velocity, dy: 0))
-    }
-    
-    func changeRunnerMotionExtreme() {
-        let velocity = Int.random(in: -60 ... 60)
-        runner.physicsBody?.velocity = CGVector(dx: 0, dy: 0)
-        runner.physicsBody?.applyImpulse(CGVector(dx: velocity, dy: 0))
-    }
-    
-    func removeAllPowerupBuffs() {
-        //print("removeAllPowerupBuffs")
-        powerupActive = false
-        umbrella.size = CGSize(width: 120, height: 25)
-        umbrella.texture = SKTexture(imageNamed: "umbrellaTexture")
-        umbrella.physicsBody = SKPhysicsBody(rectangleOf: umbrella.size)
-        umbrella.physicsBody?.allowsRotation = false
-        let Yrange = SKRange(lowerLimit: frame.midY-60, upperLimit: frame.midY-60)
-        let Xrange = SKRange(lowerLimit: frame.minX, upperLimit: frame.maxX)
-        let lockToCenter = SKConstraint.positionX(Xrange, y: Yrange)
-        umbrella.constraints = [ lockToCenter ]
-        runner.size = CGSize(width: 25, height: 50)
-        runner.physicsBody = SKPhysicsBody(rectangleOf: CGSize(width: 50, height: 50))
-        runner.physicsBody?.allowsRotation = false
-    }
-    
-    func createRestartLabel() {
-        restartLabel.position = CGPoint(x: frame.midX, y: frame.midY)
-        restartLabel.alpha = 0.70
-        restartLabel.fontColor = SKColor.red
-        restartLabel.text = "  Game Over!\nTap To Try Again"
-        restartLabel.fontSize = 40
-        restartLabel.numberOfLines = 0
-        restartLabel.name = "restartLabel"
-        
-        
-        
-        addChild(restartLabel)
-    }
-    
-    func createRunner() {
-        runner.texture = SKTexture(imageNamed: "playerImage")
-        runner.size = CGSize(width: 25, height: 50)
-        runner.name = "runner"
-        runner.physicsBody = SKPhysicsBody(rectangleOf: CGSize(width: 50, height: 50))
-        runner.position = CGPoint(x: frame.midX, y: frame.midY-110)
-        runner.physicsBody?.isDynamic = true
-        runner.physicsBody?.usesPreciseCollisionDetection = true
-        runner.physicsBody?.friction = 0
-        runner.physicsBody?.affectedByGravity = false
-        runner.physicsBody?.restitution = 1
-        runner.physicsBody?.linearDamping = 0
-        runner.physicsBody?.allowsRotation = false
-        let Yrange = SKRange(lowerLimit: frame.midY-110, upperLimit: frame.midY-110)
-        let Xrange = SKRange(lowerLimit: frame.minX, upperLimit: frame.maxX)
-        let lockToCenter = SKConstraint.positionX(Xrange, y: Yrange)
-        runner.constraints = [ lockToCenter ]
-        runner.physicsBody?.categoryBitMask = RunnerCategory
-        runner.physicsBody?.collisionBitMask = DropCategory
-        runner.physicsBody?.contactTestBitMask = DropCategory
-        addChild(runner)
-    }
-    
-    override func touchesBegan(_ touches: Set<UITouch>, with event: UIEvent?) {
-        //print("touch")
-        //test()
-        for touch in touches {
-            if(playingGame){
-                let location = touch.location(in: self)
-                umbrella.position.x = location.x
-            }
-            if !playingGame{
-                removeAllChildren()
-                createStoryboardObjects()
-            }
+        if runner.position.x > frame.midX{//right
+             let velocity = Int.random(in: -35 ... -5)
+            runner.physicsBody?.velocity = CGVector(dx: 0, dy: 0)
+            runner.physicsBody?.applyImpulse(CGVector(dx: velocity, dy: 0))
+        }else{//left
+            let velocity = Int.random(in: 5 ... 35)
+            runner.physicsBody?.velocity = CGVector(dx: 0, dy: 0)
+            runner.physicsBody?.applyImpulse(CGVector(dx: velocity, dy: 0))
         }
-        //let titleScreen = TitleScreen(fileNamed: "TitleScreen")
-        //titleScreen?.scaleMode = .aspectFill
-        //self.view?.presentScene(titleScreen!, transition: SKTransition.fade(withDuration: 0.5 ))
+}
+
+
+func changeRunnerMotionExtreme() {
+    if runner.position.x > frame.midX{//right
+        let velocity = Int.random(in: -60 ... -20)
+        runner.physicsBody?.velocity = CGVector(dx: 0, dy: 0)
+        runner.physicsBody?.applyImpulse(CGVector(dx: velocity, dy: 0))
+    }else{//left
+        let velocity = Int.random(in: 20 ... 60)
+        runner.physicsBody?.velocity = CGVector(dx: 0, dy: 0)
+        runner.physicsBody?.applyImpulse(CGVector(dx: velocity, dy: 0))
     }
+}
+
+func removeAllPowerupBuffs() {
+    //print("removeAllPowerupBuffs")
+    powerupActive = false
+    umbrella.size = CGSize(width: 120, height: 25)
+    umbrella.texture = SKTexture(imageNamed: "umbrellaTexture")
+    umbrella.physicsBody = SKPhysicsBody(rectangleOf: umbrella.size)
+    umbrella.physicsBody?.allowsRotation = false
+    let Yrange = SKRange(lowerLimit: frame.midY-60, upperLimit: frame.midY-60)
+    let Xrange = SKRange(lowerLimit: frame.minX, upperLimit: frame.maxX)
+    let lockToCenter = SKConstraint.positionX(Xrange, y: Yrange)
+    umbrella.constraints = [ lockToCenter ]
+    runner.size = CGSize(width: 25, height: 50)
+    runner.physicsBody = SKPhysicsBody(rectangleOf: CGSize(width: 50, height: 50))
+    runner.physicsBody?.allowsRotation = false
+}
+
+func createRestartLabel() {
+    restartLabel.position = CGPoint(x: frame.midX, y: frame.midY)
+    restartLabel.alpha = 0.70
+    restartLabel.fontColor = SKColor.red
+    restartLabel.text = "  Game Over!\nTap To Try Again"
+    restartLabel.fontSize = 40
+    restartLabel.numberOfLines = 0
+    restartLabel.name = "restartLabel"
     
-    override func touchesMoved(_ touches: Set<UITouch>, with event: UIEvent?) {
-        for touch in touches {
+    
+    
+    addChild(restartLabel)
+}
+
+func createRunner() {
+    runner.texture = SKTexture(imageNamed: "playerImage")
+    runner.size = CGSize(width: 25, height: 50)
+    runner.name = "runner"
+    runner.physicsBody = SKPhysicsBody(rectangleOf: CGSize(width: 50, height: 50))
+    runner.position = CGPoint(x: frame.midX, y: frame.midY-110)
+    runner.physicsBody?.isDynamic = true
+    runner.physicsBody?.usesPreciseCollisionDetection = true
+    runner.physicsBody?.friction = 0
+    runner.physicsBody?.affectedByGravity = false
+    runner.physicsBody?.restitution = 1
+    runner.physicsBody?.linearDamping = 0
+    runner.physicsBody?.allowsRotation = false
+    let Yrange = SKRange(lowerLimit: frame.midY-110, upperLimit: frame.midY-110)
+    let Xrange = SKRange(lowerLimit: frame.minX, upperLimit: frame.maxX)
+    let lockToCenter = SKConstraint.positionX(Xrange, y: Yrange)
+    runner.constraints = [ lockToCenter ]
+    runner.physicsBody?.categoryBitMask = RunnerCategory
+    runner.physicsBody?.collisionBitMask = DropCategory
+    runner.physicsBody?.contactTestBitMask = DropCategory
+    addChild(runner)
+}
+
+override func touchesBegan(_ touches: Set<UITouch>, with event: UIEvent?) {
+    //print("touch")
+    //test()
+    for touch in touches {
+        if(playingGame){
             let location = touch.location(in: self)
             umbrella.position.x = location.x
         }
+        if !playingGame{
+            removeAllChildren()
+            createStoryboardObjects()
+        }
+    }
+    //let titleScreen = TitleScreen(fileNamed: "TitleScreen")
+    //titleScreen?.scaleMode = .aspectFill
+    //self.view?.presentScene(titleScreen!, transition: SKTransition.fade(withDuration: 0.5 ))
+    
+}
+
+override func touchesMoved(_ touches: Set<UITouch>, with event: UIEvent?) {
+    for touch in touches {
+        let location = touch.location(in: self)
+        umbrella.position.x = location.x
+    }
+}
+
+func didBegin(_ contact: SKPhysicsContact) {
+    //print("hello")
+    
+    if (contact.bodyA.node?.name == "ground" && contact.bodyB.node?.name == "drop"){
+        createDrop(position: CGPoint(x:(contact.bodyB.node?.position.x)!,y:frame.maxY))
+        contact.bodyB.node?.removeFromParent()
+        
+    }else if(contact.bodyA.node?.name == "drop" && contact.bodyB.node?.name == "ground") {
+        createDrop(position: CGPoint(x:(contact.bodyA.node?.position.x)!,y:frame.maxY))
+        contact.bodyA.node?.removeFromParent()
     }
     
-    func didBegin(_ contact: SKPhysicsContact) {
-        //print("hello")
-        
-        if (contact.bodyA.node?.name == "ground" && contact.bodyB.node?.name == "drop"){
-            createDrop(position: CGPoint(x:(contact.bodyB.node?.position.x)!,y:frame.maxY))
-            contact.bodyB.node?.removeFromParent()
-            
-        }else if(contact.bodyA.node?.name == "drop" && contact.bodyB.node?.name == "ground") {
-            createDrop(position: CGPoint(x:(contact.bodyA.node?.position.x)!,y:frame.maxY))
-            contact.bodyA.node?.removeFromParent()
-        }
-        
-        if (contact.bodyA.node?.name == "umbrella" && contact.bodyB.node?.name == "drop"){
-            contact.bodyB.node?.removeFromParent()
-        }else if(contact.bodyA.node?.name == "drop" && contact.bodyB.node?.name == "umbrella") {
-            contact.bodyA.node?.removeFromParent()
-        }
-        
-        
-        
-        if (contact.bodyA.node?.name == "runner" && contact.bodyB.node?.name == "drop"){
-            contact.bodyB.node?.removeFromParent()
-            playingGame = false
-            timer.invalidate()
-            
-            if(counter > highScore.getInt()){
-                highScore.setInt(imput:counter)
-            }
-            saveData()
-            removeAllChildren()
-            
-            
-            
-            counter = 0
-            createRestartLabel()
-        }else if(contact.bodyA.node?.name == "drop" && contact.bodyB.node?.name == "runner") {
-            contact.bodyA.node?.removeFromParent()
-            playingGame = false
-            
-            timer.invalidate()
-            
-            if(counter > highScore.getInt()){
-                highScore.setInt(imput:counter)
-            }
-            saveData()
-            
-            removeAllChildren()
-            
-            
-            counter = 0
-            createRestartLabel()
-        }
-        
-        
-        
-        
-        if (contact.bodyA.node?.name == "umbrellaPowerup" && contact.bodyB.node?.name == "umbrella"){
-            contact.bodyA.node?.removeFromParent()
-            umbrella.size = CGSize(width: 200, height: 25)
-            umbrella.texture = SKTexture(imageNamed: "longUmbrellaTexture")
-            umbrella.physicsBody = SKPhysicsBody(rectangleOf: umbrella.size)
-            umbrella.physicsBody?.allowsRotation = false
-            powerupActive = true
-            
-        }else if(contact.bodyA.node?.name == "umbrella" && contact.bodyB.node?.name == "umbrellaPowerup") {
-            contact.bodyB.node?.removeFromParent()
-            umbrella.size = CGSize(width: 200, height: 25)
-            umbrella.texture = SKTexture(imageNamed: "longUmbrellaTexture")
-            umbrella.physicsBody = SKPhysicsBody(rectangleOf: umbrella.size)
-            umbrella.physicsBody?.allowsRotation = false
-            powerupActive = true
-        }
-        
-        if (contact.bodyA.node?.name == "umbrellaPowerup" && contact.bodyB.node?.name == "ground"){
-            bounceCounter += 1
-            print(bounceCounter)
-        }else if(contact.bodyA.node?.name == "ground" && contact.bodyB.node?.name == "umbrellaPowerup") {
-            bounceCounter += 1
-            print(bounceCounter)
-        }
-        
-        
-        
-        
-        if (contact.bodyA.node?.name == "sizePowerup" && contact.bodyB.node?.name == "umbrella"){
-            contact.bodyA.node?.removeFromParent()
-            runner.size = CGSize(width: 15, height: 35)
-            runner.physicsBody = SKPhysicsBody(rectangleOf: CGSize(width: 35, height: 35))
-            runner.physicsBody?.allowsRotation = false
-            powerupActive = true
-            
-        }else if(contact.bodyA.node?.name == "umbrella" && contact.bodyB.node?.name == "sizePowerup") {
-            contact.bodyB.node?.removeFromParent()
-            runner.size = CGSize(width: 15, height: 35)
-            runner.physicsBody = SKPhysicsBody(rectangleOf: CGSize(width: 35, height: 35))
-            runner.physicsBody?.allowsRotation = false
-            powerupActive = true
-        }
-        
-        if (contact.bodyA.node?.name == "sizePowerup" && contact.bodyB.node?.name == "ground"){
-            bounceCounter += 1
-            print(bounceCounter)
-        }else if(contact.bodyA.node?.name == "ground" && contact.bodyB.node?.name == "sizePowerup") {
-            bounceCounter += 1
-            print(bounceCounter)
-        }
-        
+    if (contact.bodyA.node?.name == "umbrella" && contact.bodyB.node?.name == "drop"){
+        contact.bodyB.node?.removeFromParent()
+    }else if(contact.bodyA.node?.name == "drop" && contact.bodyB.node?.name == "umbrella") {
+        contact.bodyA.node?.removeFromParent()
     }
+    
+    
+    
+    if (contact.bodyA.node?.name == "runner" && contact.bodyB.node?.name == "drop"){
+        contact.bodyB.node?.removeFromParent()
+        playingGame = false
+        timer.invalidate()
+        
+        if(counter > highScore.getInt()){
+            highScore.setInt(imput:counter)
+        }
+        saveData()
+        removeAllChildren()
+        
+        
+        
+        counter = 0
+        createRestartLabel()
+    }else if(contact.bodyA.node?.name == "drop" && contact.bodyB.node?.name == "runner") {
+        contact.bodyA.node?.removeFromParent()
+        playingGame = false
+        
+        timer.invalidate()
+        
+        if(counter > highScore.getInt()){
+            highScore.setInt(imput:counter)
+        }
+        saveData()
+        
+        removeAllChildren()
+        
+        
+        counter = 0
+        createRestartLabel()
+    }
+    
+    
+    
+    
+    if (contact.bodyA.node?.name == "umbrellaPowerup" && contact.bodyB.node?.name == "umbrella"){
+        contact.bodyA.node?.removeFromParent()
+        umbrella.size = CGSize(width: 200, height: 25)
+        umbrella.texture = SKTexture(imageNamed: "longUmbrellaTexture")
+        umbrella.physicsBody = SKPhysicsBody(rectangleOf: umbrella.size)
+        umbrella.physicsBody?.allowsRotation = false
+        powerupActive = true
+        
+    }else if(contact.bodyA.node?.name == "umbrella" && contact.bodyB.node?.name == "umbrellaPowerup") {
+        contact.bodyB.node?.removeFromParent()
+        umbrella.size = CGSize(width: 200, height: 25)
+        umbrella.texture = SKTexture(imageNamed: "longUmbrellaTexture")
+        umbrella.physicsBody = SKPhysicsBody(rectangleOf: umbrella.size)
+        umbrella.physicsBody?.allowsRotation = false
+        powerupActive = true
+    }
+    
+    if (contact.bodyA.node?.name == "umbrellaPowerup" && contact.bodyB.node?.name == "ground"){
+        bounceCounter += 1
+        print(bounceCounter)
+    }else if(contact.bodyA.node?.name == "ground" && contact.bodyB.node?.name == "umbrellaPowerup") {
+        bounceCounter += 1
+        print(bounceCounter)
+    }
+    
+    
+    
+    
+    if (contact.bodyA.node?.name == "sizePowerup" && contact.bodyB.node?.name == "umbrella"){
+        contact.bodyA.node?.removeFromParent()
+        runner.size = CGSize(width: 15, height: 35)
+        runner.physicsBody = SKPhysicsBody(rectangleOf: CGSize(width: 35, height: 35))
+        runner.physicsBody?.allowsRotation = false
+        powerupActive = true
+        
+    }else if(contact.bodyA.node?.name == "umbrella" && contact.bodyB.node?.name == "sizePowerup") {
+        contact.bodyB.node?.removeFromParent()
+        runner.size = CGSize(width: 15, height: 35)
+        runner.physicsBody = SKPhysicsBody(rectangleOf: CGSize(width: 35, height: 35))
+        runner.physicsBody?.allowsRotation = false
+        powerupActive = true
+    }
+    
+    if (contact.bodyA.node?.name == "sizePowerup" && contact.bodyB.node?.name == "ground"){
+        bounceCounter += 1
+        print(bounceCounter)
+    }else if(contact.bodyA.node?.name == "ground" && contact.bodyB.node?.name == "sizePowerup") {
+        bounceCounter += 1
+        print(bounceCounter)
+    }
+    
+}
 }
